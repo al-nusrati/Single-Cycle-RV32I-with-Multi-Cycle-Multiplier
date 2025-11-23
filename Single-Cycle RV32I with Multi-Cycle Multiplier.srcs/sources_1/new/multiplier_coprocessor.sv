@@ -26,16 +26,26 @@ module multiplier_coprocessor (
     logic [63:0] temp_product;
     logic [2:0]  funct3_reg;
     logic        sign_a, sign_b;
+    logic        result_sign;
     
+    // FIXED: Correct sign interpretation per RISC-V spec
     always_comb begin
         case (funct3_reg)
-            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end
-            3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end
-            3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end
-            3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end
+            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end  // MUL - signed×signed, lower 32
+            3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end  // MULH - signed×signed, upper 32
+            3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end  // MULHSU - signed×unsigned, upper 32
+            3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end  // MULHU - unsigned×unsigned, upper 32
             default: begin sign_a = 1'b1; sign_b = 1'b1; end
         endcase
     end
+    
+    // Convert to absolute values for signed operands
+    logic [31:0] abs_a, abs_b;
+    assign abs_a = (sign_a && a[31]) ? (~a + 32'd1) : a;
+    assign abs_b = (sign_b && b[31]) ? (~b + 32'd1) : b;
+    
+    // Track result sign
+    assign result_sign = (sign_a && a[31]) ^ (sign_b && b[31]);
     
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
@@ -48,37 +58,54 @@ module multiplier_coprocessor (
             current_state <= next_state;
             
             if (start && current_state == IDLE) begin
-                multiplicand <= (sign_a) ? $signed(a) : a;
-                multiplier <= (sign_b) ? $signed(b) : b;
-                product <= 64'b0;
+                multiplicand <= abs_a;
+                multiplier <= abs_b;
+                product <= 64'b0;  // Start fresh
                 funct3_reg <= funct3;
             end
             
+            // FIXED: Proper accumulation across steps
             case (current_state)
                 STEP1: begin
-                    if (multiplier[0]) 
-                        product <= {32'b0, multiplicand};
-                    else
-                        product <= 64'b0;
+                    temp_product = 64'b0;  // Start fresh for STEP1 only
+                    for (int i = 0; i < 8; i++) begin
+                        if (multiplier[i]) begin
+                            temp_product = temp_product + ({32'b0, multiplicand} << i);
+                        end
+                    end
+                    product <= temp_product;
                 end
+                
                 STEP2: begin
-                    temp_product = product;
-                    if (multiplier[1])
-                        temp_product = temp_product + ({31'b0, multiplicand, 1'b0});
+                    temp_product = product;  // Accumulate from previous
+                    for (int i = 8; i < 16; i++) begin
+                        if (multiplier[i]) begin
+                            temp_product = temp_product + ({32'b0, multiplicand} << i);
+                        end
+                    end
                     product <= temp_product;
                 end
+                
                 STEP3: begin
-                    temp_product = product;
-                    if (multiplier[2])
-                        temp_product = temp_product + ({30'b0, multiplicand, 2'b0});
+                    temp_product = product;  // Accumulate from previous
+                    for (int i = 16; i < 24; i++) begin
+                        if (multiplier[i]) begin
+                            temp_product = temp_product + ({32'b0, multiplicand} << i);
+                        end
+                    end
                     product <= temp_product;
                 end
+                
                 STEP4: begin
-                    temp_product = product;
-                    if (multiplier[3])
-                        temp_product = temp_product + ({29'b0, multiplicand, 3'b0});
+                    temp_product = product;  // Accumulate from previous
+                    for (int i = 24; i < 32; i++) begin
+                        if (multiplier[i]) begin
+                            temp_product = temp_product + ({32'b0, multiplicand} << i);
+                        end
+                    end
                     product <= temp_product;
                 end
+                
                 default: ;
             endcase
         end
@@ -100,13 +127,18 @@ module multiplier_coprocessor (
     assign busy = (current_state != IDLE);
     assign done = (current_state == FINISH);
     
+    // Apply sign correction for signed results
+    logic [63:0] signed_product;
+    assign signed_product = result_sign ? (~product + 64'd1) : product;
+    
+    // FIXED: Correct result selection
     always_comb begin
         case (funct3_reg)
-            3'b000: result = product[31:0];
-            3'b001: result = product[63:32];
-            3'b010: result = product[63:32];
-            3'b011: result = product[63:32];
-            default: result = product[31:0];
+            3'b000: result = signed_product[31:0];   // MUL - lower 32 bits with sign
+            3'b001: result = signed_product[63:32];  // MULH - upper 32 bits with sign
+            3'b010: result = signed_product[63:32];  // MULHSU - upper 32 bits with sign
+            3'b011: result = product[63:32];         // MULHU - upper 32 bits unsigned
+            default: result = signed_product[31:0];
         endcase
     end
 

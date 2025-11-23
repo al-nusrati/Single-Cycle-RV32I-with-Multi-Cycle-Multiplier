@@ -10,17 +10,16 @@ module multiplier_control (
     output logic        stall_cpu,
     output logic [3:0]  alu_control_out
 );
-
     localparam ALU_MUL    = 4'b1010;
     localparam ALU_MULH   = 4'b1011;
-    localparam ALU_MULHSU = 4'b1100;
-    localparam ALU_MULHU  = 4'b1101;
+    localparam ALU_MULHSU = 4'b1110;
+    localparam ALU_MULHU  = 4'b1111;
     
     typedef enum logic [1:0] {
         M_IDLE = 2'b00,
-        M_START = 2'b01,
-        M_WAIT = 2'b10,
-        M_DONE = 2'b11
+        M_STARTED = 2'b01,
+        M_WAITING = 2'b10
+        // REMOVED M_COMPLETE - not needed
     } mult_ctrl_state_t;
     
     mult_ctrl_state_t current_state, next_state;
@@ -35,23 +34,32 @@ module multiplier_control (
     
     always_comb begin
         next_state = current_state;
+        
         case (current_state)
             M_IDLE: begin
                 if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin
-                    next_state = M_START;
+                    next_state = M_STARTED;
                 end
             end
-            M_START: next_state = M_WAIT;
-            M_WAIT: begin
-                if (mult_done) next_state = M_DONE;
+            
+            M_STARTED: begin
+                next_state = M_WAITING;
             end
-            M_DONE: next_state = M_IDLE;
+            
+            M_WAITING: begin
+                if (mult_done) begin
+                    next_state = M_IDLE;  // Go directly to IDLE
+                end
+            end
+            
             default: next_state = M_IDLE;
         endcase
     end
     
-    assign mult_start = (current_state == M_START);
-    assign stall_cpu = (current_state == M_START || current_state == M_WAIT);
+    assign mult_start = (current_state == M_STARTED);
+    
+    // FIXED: Only stall during active calculation
+    assign stall_cpu = (current_state == M_STARTED || current_state == M_WAITING);
     
     always_comb begin
         if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin
@@ -66,5 +74,4 @@ module multiplier_control (
             alu_control_out = 4'b0000;
         end
     end
-
 endmodule
