@@ -1,4 +1,4 @@
-module control_unit (
+module control_unit_enhanced (
     input  logic [6:0] opcode,
     output logic       reg_write,
     output logic       alu_src,

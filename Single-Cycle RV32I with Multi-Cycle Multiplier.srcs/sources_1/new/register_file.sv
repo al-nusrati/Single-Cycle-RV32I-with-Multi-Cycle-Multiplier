@@ -13,7 +13,6 @@ module register_file #(
     output logic [DATA_WIDTH-1:0]     out_rs1,
     output logic [DATA_WIDTH-1:0]     out_rs2
 );
-
     logic [DATA_WIDTH-1:0] registers [0:NUM_REGISTERS-1];
     
     initial begin
@@ -34,21 +33,7 @@ module register_file #(
     end
     
     always_comb begin
-        if (rs1 == 5'b00000) begin
-            out_rs1 = '0;
-        end 
-        else begin
-            out_rs1 = registers[rs1];
-        end
+        out_rs1 = (rs1 == 5'b00000) ? '0 : registers[rs1];
+        out_rs2 = (rs2 == 5'b00000) ? '0 : registers[rs2];
     end
-    
-    always_comb begin
-        if (rs2 == 5'b00000) begin
-            out_rs2 = '0;
-        end 
-        else begin
-            out_rs2 = registers[rs2];
-        end
-    end
-
 endmodule

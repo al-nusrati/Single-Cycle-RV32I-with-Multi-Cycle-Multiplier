@@ -5,7 +5,6 @@ module branch_comparator (
     input  logic        branch,
     output logic        branch_taken
 );
-
     always_comb begin
         if (branch) begin
             case (funct3)
@@ -22,5 +21,4 @@ module branch_comparator (
             branch_taken = 1'b0;
         end
     end
-
 endmodule

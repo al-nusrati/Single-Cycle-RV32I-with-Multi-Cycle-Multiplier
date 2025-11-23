@@ -7,7 +7,6 @@ module data_memory (
     input  logic [31:0] write_data,
     output logic [31:0] read_data
 );
-
     logic [7:0] mem [0:1023];
     
     initial begin
@@ -50,5 +49,4 @@ module data_memory (
             endcase
         end
     end
-
 endmodule

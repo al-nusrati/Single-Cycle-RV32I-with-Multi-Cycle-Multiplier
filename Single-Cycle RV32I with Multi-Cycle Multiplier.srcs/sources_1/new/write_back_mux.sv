@@ -11,7 +11,6 @@ module write_back_mux (
     input  logic [31:0] pc_address,
     output logic [31:0] write_data
 );
-
     always_comb begin
         case (1'b1)
             (jump || jalr): write_data = pc_plus_4;
@@ -21,5 +20,4 @@ module write_back_mux (
             default: write_data = alu_result;
         endcase
     end
-
 endmodule

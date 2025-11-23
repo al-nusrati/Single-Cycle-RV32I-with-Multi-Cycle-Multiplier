@@ -18,8 +18,8 @@ module multiplier_control (
     typedef enum logic [1:0] {
         M_IDLE = 2'b00,
         M_STARTED = 2'b01,
-        M_WAITING = 2'b10
-        // REMOVED M_COMPLETE - not needed
+        M_WAITING = 2'b10,
+        M_COMPLETE = 2'b11
     } mult_ctrl_state_t;
     
     mult_ctrl_state_t current_state, next_state;
@@ -48,8 +48,12 @@ module multiplier_control (
             
             M_WAITING: begin
                 if (mult_done) begin
-                    next_state = M_IDLE;  // Go directly to IDLE
+                    next_state = M_COMPLETE;
                 end
+            end
+            
+            M_COMPLETE: begin
+                next_state = M_IDLE;
             end
             
             default: next_state = M_IDLE;
@@ -58,8 +62,8 @@ module multiplier_control (
     
     assign mult_start = (current_state == M_STARTED);
     
-    // FIXED: Only stall during active calculation
-    assign stall_cpu = (current_state == M_STARTED || current_state == M_WAITING);
+    // ✅ CORRECT: Include M_COMPLETE to ensure clean register write timing
+    assign stall_cpu = (current_state != M_IDLE);
     
     always_comb begin
         if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin
