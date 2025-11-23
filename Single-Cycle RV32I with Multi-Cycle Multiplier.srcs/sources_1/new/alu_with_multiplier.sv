@@ -1,4 +1,4 @@
-module alu_with_multiplier #(
+module alu #(
     parameter DATA_WIDTH = 32
 )(
     input  logic [DATA_WIDTH-1:0] a,
