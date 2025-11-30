@@ -28,10 +28,10 @@ module multiplier_coprocessor (
     logic        sign_a, sign_b;
     logic        result_sign;
     
-    // FIXED: MUL now correctly uses signed×signed (Deepseek was RIGHT about this!)
+    // Signed/unsigned selection based on funct3
     always_comb begin
         case (funct3_reg)
-            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end  // MUL - signed×signed (FIXED!)
+            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end  // MUL - signed×signed
             3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end  // MULH - signed×signed
             3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end  // MULHSU - signed×unsigned
             3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end  // MULHU - unsigned×unsigned
@@ -64,11 +64,10 @@ module multiplier_coprocessor (
                 funct3_reg <= funct3;
             end
             
-            // CORRECT: STEP1 starts fresh, STEP2-4 accumulate
-            // Deepseek was WRONG - this is the correct algorithm!
+            // 4-step multiplication algorithm
             case (current_state)
                 STEP1: begin
-                    temp_product = 64'b0;  // Start fresh (product was just reset to 0)
+                    temp_product = 64'b0;
                     for (int i = 0; i < 8; i++) begin
                         if (multiplier[i]) begin
                             temp_product = temp_product + ({32'b0, multiplicand} << i);
@@ -78,7 +77,7 @@ module multiplier_coprocessor (
                 end
                 
                 STEP2: begin
-                    temp_product = product;  // Accumulate from previous step
+                    temp_product = product;
                     for (int i = 8; i < 16; i++) begin
                         if (multiplier[i]) begin
                             temp_product = temp_product + ({32'b0, multiplicand} << i);
@@ -88,7 +87,7 @@ module multiplier_coprocessor (
                 end
                 
                 STEP3: begin
-                    temp_product = product;  // Accumulate from previous step
+                    temp_product = product;
                     for (int i = 16; i < 24; i++) begin
                         if (multiplier[i]) begin
                             temp_product = temp_product + ({32'b0, multiplicand} << i);
@@ -98,7 +97,7 @@ module multiplier_coprocessor (
                 end
                 
                 STEP4: begin
-                    temp_product = product;  // Accumulate from previous step
+                    temp_product = product;
                     for (int i = 24; i < 32; i++) begin
                         if (multiplier[i]) begin
                             temp_product = temp_product + ({32'b0, multiplicand} << i);
@@ -134,7 +133,7 @@ module multiplier_coprocessor (
     
     always_comb begin
         case (funct3_reg)
-            3'b000: result = signed_product[31:0];    // MUL - lower 32 bits WITH sign correction
+            3'b000: result = signed_product[31:0];    // MUL - lower 32 bits WITH sign
             3'b001: result = signed_product[63:32];   // MULH - upper 32 bits with sign
             3'b010: result = signed_product[63:32];   // MULHSU - upper 32 bits with sign
             3'b011: result = product[63:32];          // MULHU - upper 32 bits unsigned

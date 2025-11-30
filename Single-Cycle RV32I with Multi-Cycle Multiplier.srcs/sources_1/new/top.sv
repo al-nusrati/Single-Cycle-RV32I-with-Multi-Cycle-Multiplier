@@ -25,6 +25,7 @@ module top_with_multiplier #(
     logic        stall_cpu;
     logic [3:0]  mult_alu_control;
     logic        mult_instruction;
+    logic        mult_write_pending;  // NEW: Special write enable for multiplier
     
     assign pc_plus_4 = pc_address + 4;
     assign branch_target = pc_address + imm_out;
@@ -46,10 +47,11 @@ module top_with_multiplier #(
         .instruction(instruction)
     );
     
+    // FIXED: Use special multiplier write enable
     register_file reg_file (
         .clk(clk),
         .reset(reset),
-        .write_enable(reg_write && !stall_cpu),
+        .write_enable((reg_write && !stall_cpu) || mult_write_pending),
         .rs1(instruction[19:15]),
         .rs2(instruction[24:20]),
         .rd(instruction[11:7]),
@@ -99,6 +101,7 @@ module top_with_multiplier #(
         .busy(mult_busy)
     );
     
+    // FIXED: multiplier_control with proper write timing
     multiplier_control mult_ctrl (
         .clk(clk),
         .reset(reset),
@@ -109,7 +112,8 @@ module top_with_multiplier #(
         .mult_busy(mult_busy),
         .mult_start(mult_start),
         .stall_cpu(stall_cpu),
-        .alu_control_out(mult_alu_control)
+        .alu_control_out(mult_alu_control),
+        .mult_write_pending(mult_write_pending)
     );
     
     data_memory dmem (

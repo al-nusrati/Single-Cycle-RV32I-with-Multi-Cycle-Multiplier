@@ -8,7 +8,8 @@ module multiplier_control (
     input  logic        mult_busy,
     output logic        mult_start,
     output logic        stall_cpu,
-    output logic [3:0]  alu_control_out
+    output logic [3:0]  alu_control_out,
+    output logic        mult_write_pending  // NEW: Special write enable
 );
     localparam ALU_MUL    = 4'b1010;
     localparam ALU_MULH   = 4'b1011;
@@ -23,12 +24,21 @@ module multiplier_control (
     } mult_ctrl_state_t;
     
     mult_ctrl_state_t current_state, next_state;
+    logic pending_write;
     
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             current_state <= M_IDLE;
+            pending_write <= 1'b0;
         end else begin
             current_state <= next_state;
+            
+            // Set pending write when multiplier completes
+            if (current_state == M_WAITING && mult_done) begin
+                pending_write <= 1'b1;
+            end else if (current_state == M_COMPLETE) begin
+                pending_write <= 1'b0;
+            end
         end
     end
     
@@ -62,10 +72,11 @@ module multiplier_control (
     
     assign mult_start = (current_state == M_STARTED);
     
-    // FIXED: Don't stall in M_COMPLETE - allows register write to happen
-    // Stall only during M_STARTED (setup) and M_WAITING (computation)
-    // M_COMPLETE allows write_enable to go high for register write
-    assign stall_cpu = (current_state == M_STARTED || current_state == M_WAITING);
+    // FIXED: Stall immediately when multiplier starts
+    assign stall_cpu = (current_state != M_IDLE);
+    
+    // NEW: Special write enable for multiplier results
+    assign mult_write_pending = pending_write;
     
     always_comb begin
         if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin
