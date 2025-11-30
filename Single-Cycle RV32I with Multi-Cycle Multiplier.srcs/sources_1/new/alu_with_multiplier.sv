@@ -1,4 +1,4 @@
-module alu_with_multiplier #(
+module alu #(
     parameter DATA_WIDTH = 32
 )(
     input  logic [DATA_WIDTH-1:0] a,
@@ -48,7 +48,7 @@ module alu_with_multiplier #(
     
     // Zero flag only for non-multiplier operations
     assign zero = (alu_control != ALU_MUL && 
-                   alu_control != ALU_MULH && 
-                   alu_control != ALU_MULHSU && 
-                   alu_control != ALU_MULHU) ? (a == b) : 1'b0;
+                alu_control != ALU_MULH && 
+                alu_control != ALU_MULHSU && 
+                alu_control != ALU_MULHU) ? (a == b) : 1'b0;
 endmodule

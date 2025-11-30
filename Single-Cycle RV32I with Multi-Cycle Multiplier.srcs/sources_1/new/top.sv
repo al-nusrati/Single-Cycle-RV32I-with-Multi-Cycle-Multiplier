@@ -1,4 +1,4 @@
-module top_with_multiplier #(
+module top #(
     parameter DATA_WIDTH = 32,
     parameter ADDRESS_WIDTH = 32
 )(
@@ -79,7 +79,7 @@ module top_with_multiplier #(
         .out(alu_operand2)
     );
     
-    alu_with_multiplier alu (
+    alu alu (
         .a(alu_operand_a),
         .b(alu_operand2),
         .alu_control(alu_control),
@@ -101,7 +101,6 @@ module top_with_multiplier #(
         .busy(mult_busy)
     );
     
-    // FIXED: multiplier_control with proper write timing
     multiplier_control mult_ctrl (
         .clk(clk),
         .reset(reset),
@@ -158,7 +157,7 @@ module top_with_multiplier #(
         end
     end
     
-    control_enhanced control_unit (
+    control control_unit (
         .opcode(instruction[6:0]),
         .funct3(instruction[14:12]),
         .funct7(instruction[31:25]),
