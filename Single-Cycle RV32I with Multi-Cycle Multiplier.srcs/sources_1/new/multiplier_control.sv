@@ -62,8 +62,10 @@ module multiplier_control (
     
     assign mult_start = (current_state == M_STARTED);
     
-    // ✅ CORRECT: Include M_COMPLETE to ensure clean register write timing
-    assign stall_cpu = (current_state != M_IDLE);
+    // FIXED: Don't stall in M_COMPLETE - allows register write to happen
+    // Stall only during M_STARTED (setup) and M_WAITING (computation)
+    // M_COMPLETE allows write_enable to go high for register write
+    assign stall_cpu = (current_state == M_STARTED || current_state == M_WAITING);
     
     always_comb begin
         if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin

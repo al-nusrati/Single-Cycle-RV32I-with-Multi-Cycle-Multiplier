@@ -1,4 +1,4 @@
-module control (
+module control_enhanced (
     input  logic [6:0] opcode,
     input  logic [2:0] funct3,
     input  logic [6:0] funct7,
@@ -20,7 +20,7 @@ module control (
     logic [1:0] alu_op;
     logic       mult_instr_detected;
 
-    control_unit main_ctrl (
+    control_unit_enhanced main_ctrl (
         .opcode(opcode),
         .reg_write(reg_write),
         .alu_src(alu_src),
@@ -36,7 +36,7 @@ module control (
         .mult_instruction(mult_instr_detected)
     );
 
-    alu_control alu_ctrl (
+    alu_control_enhanced alu_ctrl (
         .alu_op(alu_op),
         .funct3(funct3),
         .funct7(funct7),

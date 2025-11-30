@@ -1,4 +1,4 @@
-module top #(
+module top_with_multiplier #(
     parameter DATA_WIDTH = 32,
     parameter ADDRESS_WIDTH = 32
 )(
@@ -77,7 +77,7 @@ module top #(
         .out(alu_operand2)
     );
     
-    alu alu (
+    alu_with_multiplier alu (
         .a(alu_operand_a),
         .b(alu_operand2),
         .alu_control(alu_control),
@@ -136,15 +136,25 @@ module top #(
         .write_data(reg_write_data)
     );
     
-    branch_comparator branch_comp (
-        .data1(data1),
-        .data2(data2),
-        .funct3(instruction[14:12]),
-        .branch(branch),
-        .branch_taken(branch_taken)
-    );
+    // Branch comparison logic (inline, no separate module)
+    always_comb begin
+        if (branch) begin
+            case (instruction[14:12])  // funct3
+                3'b000: branch_taken = (data1 == data2);                         // BEQ
+                3'b001: branch_taken = (data1 != data2);                         // BNE
+                3'b100: branch_taken = ($signed(data1) < $signed(data2));        // BLT
+                3'b101: branch_taken = ($signed(data1) >= $signed(data2));       // BGE
+                3'b110: branch_taken = (data1 < data2);                          // BLTU
+                3'b111: branch_taken = (data1 >= data2);                         // BGEU
+                default: branch_taken = 1'b0;
+            endcase
+        end
+        else begin
+            branch_taken = 1'b0;
+        end
+    end
     
-    control control_unit (
+    control_enhanced control_unit (
         .opcode(instruction[6:0]),
         .funct3(instruction[14:12]),
         .funct7(instruction[31:25]),

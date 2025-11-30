@@ -1,4 +1,4 @@
-module alu_control (
+module alu_control_enhanced (
     input  logic [1:0]  alu_op,
     input  logic [2:0]  funct3,
     input  logic [6:0]  funct7,
@@ -6,7 +6,6 @@ module alu_control (
     input  logic        mult_instruction,
     output logic [3:0]  alu_control
 );
-    // ✅ All unique codes
     localparam ALU_AND   = 4'b0000;
     localparam ALU_OR    = 4'b0001;
     localparam ALU_ADD   = 4'b0010;

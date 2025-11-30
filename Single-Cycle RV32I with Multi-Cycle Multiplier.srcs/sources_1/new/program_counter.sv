@@ -4,7 +4,6 @@ module program_counter (
     input  logic [31:0] pc_next,
     output logic [31:0] pc_address
 );
-
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             pc_address <= 32'h0;
@@ -13,5 +12,4 @@ module program_counter (
             pc_address <= pc_next;
         end
     end
-
 endmodule
