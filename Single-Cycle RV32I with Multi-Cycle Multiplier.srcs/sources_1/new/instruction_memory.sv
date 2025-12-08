@@ -10,3 +10,9 @@ module instruction_memory #(
     initial $readmemh("instructions.mem", mem);     // load instructions from file
     assign instruction = mem[address];              // output the instruction at the given address
 endmodule
+
+// Explanation:
+// This SystemVerilog module implements an instruction memory for a RISC-V CPU.
+// It stores a fixed set of instructions loaded from a file.
+// The address input selects which instruction to output.
+// The instruction output provides the instruction at the given address to the CPU.
