@@ -1,12 +1,12 @@
 module mux_2to1 #(
     parameter DATA_WIDTH = 32
 )(
-    input  logic                     sel,       // select signal
-    input  logic [DATA_WIDTH-1:0]    in0,       // input 0 from mux
-    input  logic [DATA_WIDTH-1:0]    in1,       // input 1 from mux
-    output logic [DATA_WIDTH-1:0]    out        // output towards alu
+    input  logic                     sel,
+    input  logic [DATA_WIDTH-1:0]    in0,
+    input  logic [DATA_WIDTH-1:0]    in1,
+    output logic [DATA_WIDTH-1:0]    out
 );
-    assign out = sel ? in1 : in0;               // 2-to-1 mux logic
+    assign out = sel ? in1 : in0;
 endmodule
 
 // Explanation:

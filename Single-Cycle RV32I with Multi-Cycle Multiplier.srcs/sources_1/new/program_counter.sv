@@ -1,8 +1,8 @@
 module program_counter (
     input  logic clk,
     input  logic reset,
-    input  logic [31:0] pc_next,        // from top module
-    output logic [31:0] pc_address     // to top module
+    input  logic [31:0] pc_next,
+    output logic [31:0] pc_address
 );
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin

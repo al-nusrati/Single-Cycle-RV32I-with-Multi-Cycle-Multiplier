@@ -9,7 +9,7 @@ module multiplier_control (
     output logic        mult_start,
     output logic        stall_cpu,
     output logic [3:0]  alu_control_out,
-    output logic        mult_write_pending  // NEW: Special write enable
+    output logic        mult_write_pending
 );
     localparam ALU_MUL    = 4'b1010;
     localparam ALU_MULH   = 4'b1011;
@@ -33,7 +33,6 @@ module multiplier_control (
         end else begin
             current_state <= next_state;
             
-            // Set pending write when multiplier completes
             if (current_state == M_WAITING && mult_done) begin
                 pending_write <= 1'b1;
             end else if (current_state == M_COMPLETE) begin
@@ -71,11 +70,7 @@ module multiplier_control (
     end
     
     assign mult_start = (current_state == M_STARTED);
-    
-    // FIXED: Stall immediately when multiplier starts
     assign stall_cpu = (current_state != M_IDLE);
-    
-    // NEW: Special write enable for multiplier results
     assign mult_write_pending = pending_write;
     
     always_comb begin

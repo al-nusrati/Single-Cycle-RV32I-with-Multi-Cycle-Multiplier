@@ -1,0 +1,7 @@
+# Example test program
+00000093  # ADDI x1, x0, 0  # x1 = 0
+00100113  # ADDI x2, x0, 1  # x2 = 1
+00500193  # ADDI x3, x0, 5  # x3 = 5
+00600213  # ADDI x4, x0, 6  # x4 = 6
+023182b3  # MUL x5, x3, x4  # x5 = 5 × 6 = 30 (34 cycles)
+00008067  # JALR x0, x1, 0  # Jump to address in x1

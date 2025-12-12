@@ -1,31 +1,31 @@
 module control_unit (
-    input  logic [6:0] opcode,                  // opcode from instruction
-    output logic       reg_write,               // register write enable
-    output logic       alu_src,                 // ALU source select
-    output logic       mem_read,                // memory read enable
-    output logic       mem_write,               // memory write enable
-    output logic       mem_to_reg,              // memory to register select
-    output logic       branch,                  // branch instruction flag
-    output logic       jump,                    // jump instruction flag
-    output logic       jalr,                    // jump and link register instruction flag
-    output logic       lui,                     // load upper immediate instruction flag
-    output logic       auipc,                   // add upper immediate to PC instruction flag
-    output logic [1:0] alu_op,                  // ALU operation code
-    output logic       mult_instruction         // flag indicating a multiply instruction
+    input  logic [6:0] opcode,
+    output logic       reg_write,
+    output logic       alu_src,
+    output logic       mem_read,
+    output logic       mem_write,
+    output logic       mem_to_reg,
+    output logic       branch,
+    output logic       jump,
+    output logic       jalr,
+    output logic       lui,
+    output logic       auipc,
+    output logic [1:0] alu_op,
+    output logic       mult_instruction
 );
 
-    localparam OP_R_TYPE  = 7'b0110011;    // R-type opcode
-    localparam OP_I_TYPE  = 7'b0010011;    // I-type opcode
-    localparam OP_LOAD    = 7'b0000011;    // Load opcode
-    localparam OP_STORE   = 7'b0100011;    // Store opcode
-    localparam OP_BRANCH  = 7'b1100011;    // Branch opcode
-    localparam OP_JAL     = 7'b1101111;    // JAL opcode
-    localparam OP_JALR    = 7'b1100111;    // JALR opcode
-    localparam OP_LUI     = 7'b0110111;    // LUI opcode
-    localparam OP_AUIPC   = 7'b0010111;    // AUIPC opcode
+    localparam OP_R_TYPE  = 7'b0110011;
+    localparam OP_I_TYPE  = 7'b0010011;
+    localparam OP_LOAD    = 7'b0000011;
+    localparam OP_STORE   = 7'b0100011;
+    localparam OP_BRANCH  = 7'b1100011;
+    localparam OP_JAL     = 7'b1101111;
+    localparam OP_JALR    = 7'b1100111;
+    localparam OP_LUI     = 7'b0110111;
+    localparam OP_AUIPC   = 7'b0010111;
 
     always_comb begin
-        reg_write  = 1'b0;   //..
+        reg_write  = 1'b0;
         alu_src    = 1'b0;
         mem_read   = 1'b0;
         mem_write  = 1'b0;
@@ -103,6 +103,7 @@ module control_unit (
     end
 
 endmodule
+
 
 // Explanation:
 // This SystemVerilog module implements the main control unit for a RISC-V CPU.

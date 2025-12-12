@@ -1,19 +1,19 @@
 module control (
-    input  logic [6:0] opcode,               // opcode from instruction
-    input  logic [2:0] funct3,               // funct3 field from instruction
-    input  logic [6:0] funct7,               // funct7 field from instruction
-    input  logic [3:0] mult_alu_control,     // control signals for multiplier ALU operations
-    input  logic       mult_instruction,     // flag indicating a multiply instruction
-    output logic       reg_write,            // register write enable
-    output logic       alu_src,              // ALU source select
-    output logic       mem_read,             // memory read enable
-    output logic       mem_write,            // memory write enable
-    output logic       mem_to_reg,           // memory to register select
-    output logic       branch,               // branch instruction flag
-    output logic       jump,                 // jump instruction flag
-    output logic       jalr,                 // jump and link register instruction flag
-    output logic       lui,                  // load upper immediate instruction flag 
-    output logic       auipc,                // add upper immediate to PC instruction flag 
+    input  logic [6:0] opcode,
+    input  logic [2:0] funct3,
+    input  logic [6:0] funct7,
+    input  logic [3:0] mult_alu_control,
+    input  logic       mult_instruction,
+    output logic       reg_write,
+    output logic       alu_src,
+    output logic       mem_read,
+    output logic       mem_write,
+    output logic       mem_to_reg,
+    output logic       branch,
+    output logic       jump,
+    output logic       jalr,
+    output logic       lui,
+    output logic       auipc,
     output logic [3:0] alu_control
 );
 
