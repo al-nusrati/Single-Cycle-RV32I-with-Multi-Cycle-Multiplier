@@ -22,6 +22,7 @@ module control (
 
     control_unit main_ctrl (
         .opcode(opcode),
+        .funct7(funct7),
         .reg_write(reg_write),
         .alu_src(alu_src),
         .mem_read(mem_read),
@@ -37,12 +38,13 @@ module control (
     );
 
     alu_control alu_ctrl (
-        .alu_op(alu_op),
-        .funct3(funct3),
-        .funct7(funct7),
-        .mult_alu_control(mult_alu_control),
-        .mult_instruction(mult_instruction),
-        .alu_control(alu_control)
-    );
+    .alu_op(alu_op),
+    .funct3(funct3),
+    .funct7(funct7),
+    .mult_alu_control(mult_alu_control),
+    .mult_instruction(mult_instruction),
+    .opcode(opcode),  // ← ADD THIS LINE!
+    .alu_control(alu_control)
+);
 
 endmodule

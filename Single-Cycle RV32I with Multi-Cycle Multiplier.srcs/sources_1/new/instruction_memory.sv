@@ -1,22 +1,18 @@
 module instruction_memory #(
     parameter DATA_WIDTH = 32,
     parameter DEPTH = 256,
-    parameter ADDR_WIDTH = 32
+    parameter ADDR_WIDTH = 8
 )(
-    input  [ADDR_WIDTH-1:0] address,
-    output reg [DATA_WIDTH-1:0] instruction
+    input  logic [ADDR_WIDTH-1:0] address,
+    output logic [DATA_WIDTH-1:0] instruction
 );
-    
-    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+    logic [DATA_WIDTH-1:0] mem [0:DEPTH-1];
     
     initial begin
         $readmemh("instructions.mem", mem);
     end
     
-    always @(*) begin
-        assign instruction = mem[address[7:0]];
-    end
-    
+    assign instruction = mem[address];
 endmodule
 
 // Explanation:

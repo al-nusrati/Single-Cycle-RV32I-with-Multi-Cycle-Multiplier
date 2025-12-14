@@ -40,6 +40,7 @@ endmodule
 
 
 
+
 // Explanation:
 // This SystemVerilog module implements a register file for a RISC-V CPU. It contains 32 registers, each 32 bits wide.
 // The module supports reading two source registers (rs1 and rs2) and writing to a destination register (rd).

@@ -1,5 +1,6 @@
 module control_unit (
     input  logic [6:0] opcode,
+    input  logic [6:0] funct7,
     output logic       reg_write,
     output logic       alu_src,
     output logic       mem_read,
@@ -25,6 +26,7 @@ module control_unit (
     localparam OP_AUIPC   = 7'b0010111;
 
     always_comb begin
+        // Default values
         reg_write  = 1'b0;
         alu_src    = 1'b0;
         mem_read   = 1'b0;
@@ -43,7 +45,8 @@ module control_unit (
                 reg_write  = 1'b1;
                 alu_src    = 1'b0;
                 alu_op     = 2'b10;
-                mult_instruction = 1'b1;
+                // Check if multiply instruction (funct7[0] == 1)
+                mult_instruction = funct7[0];
             end
             
             OP_I_TYPE: begin
@@ -98,11 +101,12 @@ module control_unit (
                 alu_op     = 2'b00;
             end
             
-            default: ;
+            default: ; // Keep default values
         endcase
     end
 
 endmodule
+
 
 
 // Explanation:

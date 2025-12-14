@@ -6,6 +6,7 @@ module top #(
     input  logic reset
 );
 
+    // Internal signals
     logic [31:0] pc_address, pc_next, pc_plus_4;
     logic [31:0] instruction;
     logic [31:0] imm_out;
@@ -20,6 +21,7 @@ module top #(
     logic        jump, jalr, lui, auipc;
     logic        branch_taken;
     
+    // Multiplier signals
     logic [31:0] mult_result;
     logic        mult_start, mult_done, mult_busy;
     logic        stall_cpu;
@@ -27,39 +29,32 @@ module top #(
     logic        mult_instruction;
     logic        mult_write_pending;
     
-    // Internal wires for module connections
-    wire [31:0] pc_address_wire;
-    wire [31:0] instruction_wire;
-    wire [31:0] data1_wire, data2_wire;
-    wire [31:0] alu_result_wire;
-    wire [31:0] mem_read_data_wire;
-    wire        zero_wire;
-    
+    // PC calculations
     assign pc_plus_4 = pc_address + 4;
     assign branch_target = pc_address + imm_out;
     assign jump_target = jalr ? ((data1 + imm_out) & ~32'b1) : (pc_address + imm_out);
     
+    // PC next logic with stall support
     assign pc_next = stall_cpu ? pc_address : 
                     (branch_taken ? branch_target : 
                     (jump || jalr ? jump_target : pc_plus_4));
     
-    program_counter pc_inst (
+    // Program Counter
+    program_counter pc (
         .clk(clk),
         .reset(reset),
         .pc_next(pc_next),
-        .pc_address(pc_address_wire)
+        .pc_address(pc_address)
     );
     
-    assign pc_address = pc_address_wire;
-    
-    instruction_memory imem_inst (
-        .address(pc_address[7:0]),  // Use 8 bits for 256 instructions
-        .instruction(instruction_wire)
+    // Instruction Memory - FIXED: Use word-aligned address
+    instruction_memory imem (
+        .address(pc_address[9:2]),  // Word addressing for 256 instructions
+        .instruction(instruction)
     );
     
-    assign instruction = instruction_wire;
-    
-    register_file reg_file_inst (
+    // Register File with special multiplier write enable
+    register_file reg_file (
         .clk(clk),
         .reset(reset),
         .write_enable((reg_write && !stall_cpu) || mult_write_pending),
@@ -67,59 +62,58 @@ module top #(
         .rs2(instruction[24:20]),
         .rd(instruction[11:7]),
         .write_data(reg_write_data),
-        .out_rs1(data1_wire),
-        .out_rs2(data2_wire)
+        .out_rs1(data1),
+        .out_rs2(data2)
     );
     
-    assign data1 = data1_wire;
-    assign data2 = data2_wire;
-    
-    imm_gen imm_gen_inst (
+    // Immediate Generator
+    imm_gen imm_gen (
         .instruction(instruction),
         .imm_out(imm_out)
     );
     
-    mux_2to1 alu_a_mux_inst (
+    // ALU Operand A Mux (for AUIPC)
+    mux_2to1 alu_a_mux (
         .sel(auipc),
         .in0(data1),
         .in1(pc_address),
         .out(alu_operand_a)
     );
     
-    mux_2to1 alu_src_mux_inst (
+    // ALU Source Mux (Operand B)
+    mux_2to1 alu_src_mux (
         .sel(alu_src),
         .in0(data2),
         .in1(imm_out),
         .out(alu_operand2)
     );
     
-    alu alu_inst (
+    // ALU with multiplier interface
+    alu alu (
         .a(alu_operand_a),
         .b(alu_operand2),
         .alu_control(alu_control),
         .mult_result(mult_result),
         .mult_done(mult_done),
-        .result(alu_result_wire),
-        .zero(zero_wire)
+        .result(alu_result),
+        .zero(zero)
     );
     
-    assign alu_result = alu_result_wire;
-    assign zero = zero_wire;
-    
-    // CRITICAL FIX: Use data2 (register rs2) for multiplier
-    multiplier_coprocessor multiplier_inst (
+    // 32-Cycle Multiplier Co-Processor - FIXED: Uses data2 (register) not alu_operand2
+    multiplier_coprocessor multiplier (
         .clk(clk),
         .reset(reset),
         .start(mult_start),
-        .a(data1),           // rs1
-        .b(data2),           // rs2 (FIXED!)
+        .a(data1),              // rs1 register value
+        .b(data2),              // rs2 register value (NOT immediate!)
         .funct3(instruction[14:12]),
         .result(mult_result),
         .done(mult_done),
         .busy(mult_busy)
     );
     
-    multiplier_control mult_ctrl_inst (
+    // Multiplier Control FSM
+    multiplier_control mult_ctrl (
         .clk(clk),
         .reset(reset),
         .opcode(instruction[6:0]),
@@ -133,19 +127,19 @@ module top #(
         .mult_write_pending(mult_write_pending)
     );
     
-    data_memory dmem_inst (
+    // Data Memory
+    data_memory dmem (
         .clk(clk),
         .mem_read(mem_read),
         .mem_write(mem_write),
         .funct3(instruction[14:12]),
         .address(alu_result),
         .write_data(data2),
-        .read_data(mem_read_data_wire)
+        .read_data(mem_read_data)
     );
     
-    assign mem_read_data = mem_read_data_wire;
-    
-    write_back_mux wb_mux_inst (
+    // Write-back Multiplexer
+    write_back_mux wb_mux (
         .mem_to_reg(mem_to_reg),
         .jump(jump),
         .jalr(jalr),
@@ -159,16 +153,16 @@ module top #(
         .write_data(reg_write_data)
     );
     
-    // Branch comparison logic
-    always @(*) begin
+    // Branch Comparison Logic (inline, no separate module)
+    always_comb begin
         if (branch) begin
-            case (instruction[14:12])
-                3'b000: branch_taken = (data1 == data2);
-                3'b001: branch_taken = (data1 != data2);
-                3'b100: branch_taken = ($signed(data1) < $signed(data2));
-                3'b101: branch_taken = ($signed(data1) >= $signed(data2));
-                3'b110: branch_taken = (data1 < data2);
-                3'b111: branch_taken = (data1 >= data2);
+            case (instruction[14:12])  // funct3
+                3'b000: branch_taken = (data1 == data2);                         // BEQ
+                3'b001: branch_taken = (data1 != data2);                         // BNE
+                3'b100: branch_taken = ($signed(data1) < $signed(data2));        // BLT
+                3'b101: branch_taken = ($signed(data1) >= $signed(data2));       // BGE
+                3'b110: branch_taken = (data1 < data2);                          // BLTU
+                3'b111: branch_taken = (data1 >= data2);                         // BGEU
                 default: branch_taken = 1'b0;
             endcase
         end
@@ -177,7 +171,8 @@ module top #(
         end
     end
     
-    control control_unit_inst (
+    // Control Unit
+    control control_unit (
         .opcode(instruction[6:0]),
         .funct3(instruction[14:12]),
         .funct7(instruction[31:25]),
@@ -196,6 +191,7 @@ module top #(
         .alu_control(alu_control)
     );
     
-    assign mult_instruction = (instruction[6:0] == 7'b0110011) && (instruction[31:25][0] == 1'b1);
+    // Multiplier instruction detection
+    assign mult_instruction = (instruction[6:0] == 7'b0110011) && (instruction[25] == 1'b1);
 
 endmodule

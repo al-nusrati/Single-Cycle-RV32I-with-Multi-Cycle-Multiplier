@@ -11,29 +11,48 @@ module multiplier_control (
     output logic [3:0]  alu_control_out,
     output logic        mult_write_pending
 );
+    // ALU control codes for multiply operations
     localparam ALU_MUL    = 4'b1010;
     localparam ALU_MULH   = 4'b1011;
     localparam ALU_MULHSU = 4'b1110;
     localparam ALU_MULHU  = 4'b1111;
+    localparam ALU_ADD    = 4'b0010;  // Default
     
-    typedef enum logic [1:0] {
-        M_IDLE = 2'b00,
-        M_STARTED = 2'b01,
-        M_WAITING = 2'b10,
-        M_COMPLETE = 2'b11
-    } mult_ctrl_state_t;
+    // FSM state encoding
+    localparam [1:0] M_IDLE     = 2'b00;
+    localparam [1:0] M_BUSY     = 2'b01;
+    localparam [1:0] M_COMPLETE = 2'b10;
     
-    mult_ctrl_state_t current_state, next_state;
+    logic [1:0] current_state, next_state;
     logic pending_write;
+    logic mult_detected;
+    logic [3:0] alu_control_reg;
     
+    // Detect multiply instruction
+    assign mult_detected = (opcode == 7'b0110011) && (funct7[0] == 1'b1);
+    
+    // State register
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             current_state <= M_IDLE;
             pending_write <= 1'b0;
+            alu_control_reg <= ALU_ADD;
         end else begin
             current_state <= next_state;
             
-            if (current_state == M_WAITING && mult_done) begin
+            // Capture ALU control at the start of multiplication
+            if (current_state == M_IDLE && mult_detected) begin
+                case (funct3)
+                    3'b000: alu_control_reg <= ALU_MUL;
+                    3'b001: alu_control_reg <= ALU_MULH;
+                    3'b010: alu_control_reg <= ALU_MULHSU;
+                    3'b011: alu_control_reg <= ALU_MULHU;
+                    default: alu_control_reg <= ALU_MUL;
+                endcase
+            end
+            
+            // Set pending_write when multiplication completes
+            if (current_state == M_BUSY && mult_done) begin
                 pending_write <= 1'b1;
             end else if (current_state == M_COMPLETE) begin
                 pending_write <= 1'b0;
@@ -41,21 +60,18 @@ module multiplier_control (
         end
     end
     
+    // Next state logic
     always_comb begin
         next_state = current_state;
         
         case (current_state)
             M_IDLE: begin
-                if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin
-                    next_state = M_STARTED;
+                if (mult_detected && !mult_busy) begin
+                    next_state = M_BUSY;
                 end
             end
             
-            M_STARTED: begin
-                next_state = M_WAITING;
-            end
-            
-            M_WAITING: begin
+            M_BUSY: begin
                 if (mult_done) begin
                     next_state = M_COMPLETE;
                 end
@@ -69,21 +85,19 @@ module multiplier_control (
         endcase
     end
     
-    assign mult_start = (current_state == M_STARTED);
-    assign stall_cpu = (current_state != M_IDLE);
+    // Output logic
+    // Start multiplication immediately when detected
+    assign mult_start = (current_state == M_IDLE) && mult_detected;
+    
+    // CRITICAL: Stall during both M_BUSY and M_COMPLETE for full 33 cycles
+    // M_BUSY = 32 cycles (BIT0-BIT31)
+    // M_COMPLETE = 1 cycle (FINISH state for write-back)
+    assign stall_cpu = (current_state == M_BUSY) || (current_state == M_COMPLETE);
+    
+    // Write pending flag for register file
     assign mult_write_pending = pending_write;
     
-    always_comb begin
-        if (opcode == 7'b0110011 && funct7[0] == 1'b1) begin
-            case (funct3)
-                3'b000: alu_control_out = ALU_MUL;
-                3'b001: alu_control_out = ALU_MULH;
-                3'b010: alu_control_out = ALU_MULHSU;
-                3'b011: alu_control_out = ALU_MULHU;
-                default: alu_control_out = ALU_MUL;
-            endcase
-        end else begin
-            alu_control_out = 4'b0000;
-        end
-    end
+    // Maintain ALU control during multiplication
+    assign alu_control_out = (mult_detected || current_state != M_IDLE) ? alu_control_reg : ALU_ADD;
+
 endmodule

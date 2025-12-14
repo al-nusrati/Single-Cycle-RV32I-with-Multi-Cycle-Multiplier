@@ -12,13 +12,17 @@ module write_back_mux (
     output logic [31:0] write_data
 );
     always_comb begin
-        case (1'b1)
-            (jump || jalr): write_data = pc_plus_4;
-            lui: write_data = imm_out;
-            auipc: write_data = alu_result;
-            mem_to_reg: write_data = mem_data;
-            default: write_data = alu_result;
-        endcase
+        if (lui) begin
+            write_data = imm_out;
+        end else if (auipc) begin
+            write_data = pc_address + imm_out; // AUIPC needs PC + immediate
+        end else if (jump || jalr) begin
+            write_data = pc_plus_4;
+        end else if (mem_to_reg) begin
+            write_data = mem_data;
+        end else begin
+            write_data = alu_result;
+        end
     end
 endmodule
 
