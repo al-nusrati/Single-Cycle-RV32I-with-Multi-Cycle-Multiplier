@@ -14,7 +14,7 @@ Reset released at t=20000
 [Cycle    4 | T=55000] PC=0x0000000c | Instr=0x00020213 (I-type)
         → Writing x4 = 0x80000000 (-2147483648)
 [Cycle    5 | T=65000] PC=0x00000010 | Instr=0x025202b3 (M-ext)
-        → Writing x5 = 0x00000000 (0)
+        → Writing x5 = 0x80000000 (-2147483648)
         ⚡ MULTIPLY STARTED: 2147483648 × 0
 [Cycle    6 | T=75000] PC=0x00000014 | Instr=0xfff00093 (I-type)
         → Writing x1 = 0xffffffff (-1)
@@ -114,7 +114,7 @@ Reset released at t=20000
         ⏳ MULT_BUSY | State=32 | Product=0x0000000000000000 | Stalled=1
 
 *** MULTIPLICATION COMPLETED ***
-Operand A (multiplicand): 2147483648 (0x80000000)
+Operand A (multiplicand): 0 (0x00000000)
 Operand B (multiplier):   0 (0x00000000)
 64-bit Product:           0x0000000000000000
 Signed Product:           0x0000000000000000
@@ -125,7 +125,6 @@ funct3:                   000
 
 [Cycle   38 | T=395000] PC=0x00000014 | Instr=0xfff00093 (I-type)
         → Writing x1 = 0xffffffff (-1)
-        ⏳ MULT_BUSY | State=33 | Product=0x0000000000000000 | Stalled=1
         ✓ MULTIPLY DONE: Result = 0x00000000 (0)
 [Cycle   39 | T=405000] PC=0x00000014 | Instr=0xfff00093 (I-type)
         → Writing x1 = 0xffffffff (-1)
@@ -232,7 +231,7 @@ funct3:                   000
         ⏳ MULT_BUSY | State=32 | Product=0x0000000000000000 | Stalled=1
 
 *** MULTIPLICATION COMPLETED ***
-Operand A (multiplicand): 1 (0x00000001)
+Operand A (multiplicand): 2147483648 (0x80000000)
 Operand B (multiplier):   0 (0x00000000)
 64-bit Product:           0x0000000000000000
 Signed Product:           0x0000000000000000
@@ -243,7 +242,6 @@ funct3:                   110
 
 [Cycle   74 | T=755000] PC=0x0000001c | Instr=0x80000237 (Unknown)
         → Writing x4 = 0x80000000 (-2147483648)
-        ⏳ MULT_BUSY | State=33 | Product=0x0000000000000000 | Stalled=1
         ✓ MULTIPLY DONE: Result = 0x00000000 (0)
 [Cycle   75 | T=765000] PC=0x0000001c | Instr=0x80000237 (Unknown)
         → Writing x4 = 0x80000000 (-2147483648)
@@ -261,24 +259,26 @@ funct3:                   110
         ⏳ MULT_BUSY | State=1 | Product=0x0000000000000000 | Stalled=1
 [Cycle   81 | T=825000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=2 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=2 | Product=0x0000000000000000 | Stalled=1
 [Cycle   82 | T=835000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=3 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=3 | Product=0x0000000000000000 | Stalled=1
 [Cycle   83 | T=845000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=4 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=4 | Product=0x0000000000000000 | Stalled=1
 [Cycle   84 | T=855000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=5 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=5 | Product=0x0000000000000000 | Stalled=1
 [Cycle   85 | T=865000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=6 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=6 | Product=0x0000000000000000 | Stalled=1
 [Cycle   86 | T=875000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=7 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=7 | Product=0x0000000000000000 | Stalled=1
 [Cycle   87 | T=885000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
         → Writing x8 = 0x7ff00000 (2146435072)
-        ⏳ MULT_BUSY | State=8 | Product=0x0000000080000000 | Stalled=1
+        ⏳ MULT_BUSY | State=8 | Product=0x0000000000000000 | Stalled=1
 [Cycle   88 | T=895000] PC=0x0000002c | Instr=0x7ff00437 (Unknown)
-        →
+        → Writing x8 = 0x7ff00000 (2146435072)
+        ⏳ MULT_BUSY | State=9 | Product=0x0000000000000000 | Stalled=1
+[Cycle   89 | T=905000] PC=

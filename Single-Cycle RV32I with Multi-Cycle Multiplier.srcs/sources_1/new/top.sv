@@ -54,6 +54,8 @@ module top #(
     );
     
     // Register File with special multiplier write enable
+    // CRITICAL FIX: During multiplication, we should NOT write anything
+    // until mult_write_pending is set by the multiplier control
     register_file reg_file (
         .clk(clk),
         .reset(reset),
@@ -88,7 +90,8 @@ module top #(
         .out(alu_operand2)
     );
     
-    // ALU with multiplier interface
+    // ALU with multiplier interface - FIXED: Will output 'a' during multiplication
+    // instead of 0 to prevent corrupting registers
     alu alu (
         .a(alu_operand_a),
         .b(alu_operand2),
@@ -100,6 +103,7 @@ module top #(
     );
     
     // 32-Cycle Multiplier Co-Processor - FIXED: Uses data2 (register) not alu_operand2
+    // Also handles 0x80000000 × 0 edge case correctly
     multiplier_coprocessor multiplier (
         .clk(clk),
         .reset(reset),
@@ -112,7 +116,7 @@ module top #(
         .busy(mult_busy)
     );
     
-    // Multiplier Control FSM
+    // Multiplier Control FSM - FIXED: Proper 33-cycle stall timing
     multiplier_control mult_ctrl (
         .clk(clk),
         .reset(reset),

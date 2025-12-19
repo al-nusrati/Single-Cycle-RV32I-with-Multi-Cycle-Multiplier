@@ -51,7 +51,7 @@ module multiplier_control (
                 endcase
             end
             
-            // Set pending_write when multiplication completes
+            // Set pending_write flag when multiplication completes
             if (current_state == M_BUSY && mult_done) begin
                 pending_write <= 1'b1;
             end else if (current_state == M_COMPLETE) begin
@@ -86,18 +86,16 @@ module multiplier_control (
     end
     
     // Output logic
-    // Start multiplication immediately when detected
+    // Start multiplication immediately when detected (same cycle)
     assign mult_start = (current_state == M_IDLE) && mult_detected;
     
-    // CRITICAL: Stall during both M_BUSY and M_COMPLETE for full 33 cycles
-    // M_BUSY = 32 cycles (BIT0-BIT31)
-    // M_COMPLETE = 1 cycle (FINISH state for write-back)
+    // Stall during BUSY and COMPLETE states (33 cycles total)
     assign stall_cpu = (current_state == M_BUSY) || (current_state == M_COMPLETE);
     
     // Write pending flag for register file
     assign mult_write_pending = pending_write;
     
-    // Maintain ALU control during multiplication
+    // ALU control output - maintain during multiplication
     assign alu_control_out = (mult_detected || current_state != M_IDLE) ? alu_control_reg : ALU_ADD;
 
 endmodule

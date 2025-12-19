@@ -30,57 +30,55 @@ module multiplier_coprocessor (
     logic [2:0]  funct3_reg;
     logic        sign_a, sign_b;
     logic        result_sign;
-    logic [31:0] a_reg, b_reg;  // Store original operands
+    logic [31:0] a_reg, b_reg;
     
-    // Sign determination based on instruction type
+    // Sign determination
     always_comb begin
         case (funct3_reg)
-            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end  // MUL - signed × signed
-            3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end  // MULH - signed × signed
-            3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end  // MULHSU - signed × unsigned
-            3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end  // MULHU - unsigned × unsigned
+            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end  // MUL
+            3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end  // MULH
+            3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end  // MULHSU
+            3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end  // MULHU
             default: begin sign_a = 1'b1; sign_b = 1'b1; end
         endcase
     end
     
-    // Function for absolute value calculation
-    function automatic logic [31:0] get_abs(input logic [31:0] val, input logic is_signed);
-        if (!is_signed) return val;              // Unsigned - use as-is
-        if (val[31] == 1'b0) return val;         // Positive - already absolute
-        if (val == 32'h80000000) return val;     // -2^31 special case - cannot negate
-        return ~val + 32'd1;                     // Negate using two's complement
+    // Absolute value function
+    function logic [31:0] get_abs(input logic [31:0] val, input logic is_signed);
+        if (!is_signed) return val;
+        if (val[31] == 1'b0) return val;
+        if (val == 32'h80000000) return val;
+        return ~val + 32'd1;
     endfunction
     
-    // Absolute value conversion
+    // Absolute values
     logic [31:0] abs_a, abs_b;
     assign abs_a = get_abs(a_reg, sign_a);
     assign abs_b = get_abs(b_reg, sign_b);
     
-    // CRITICAL FIX: Comprehensive zero and special case handling
+    // Zero handling
     logic special_zero_case;
     assign special_zero_case = (a_reg == 32'h0) || (b_reg == 32'h0);
     
-    // Result sign calculation with proper edge case handling
-    // For 0x80000000 in signed context, treat as negative ONLY if other operand is non-zero
+    // Result sign calculation
     logic a_neg, b_neg;
     assign a_neg = sign_a && a_reg[31] && !(a_reg == 32'h80000000 && special_zero_case);
     assign b_neg = sign_b && b_reg[31] && !(b_reg == 32'h80000000 && special_zero_case);
     assign result_sign = special_zero_case ? 1'b0 : (a_neg ^ b_neg);
     
-    // State register and multiplication logic
+    // State machine
     always_ff @(posedge clk or posedge reset) begin
         if (reset) begin
             current_state <= IDLE;
+            a_reg <= 32'b0;
+            b_reg <= 32'b0;
             multiplicand <= 32'b0;
             multiplier <= 32'b0;
             product <= 64'b0;
             funct3_reg <= 3'b0;
-            a_reg <= 32'b0;
-            b_reg <= 32'b0;
         end else begin
             current_state <= next_state;
             
-            // Capture operands when starting (prevents mid-multiplication changes)
             if (start && current_state == IDLE) begin
                 a_reg <= a;
                 b_reg <= b;
@@ -90,8 +88,7 @@ module multiplier_coprocessor (
                 funct3_reg <= funct3;
             end
             
-            // Sequential shift-and-add: one bit per cycle
-            // CRITICAL: Each BIT state shifts by the bit position (not typos!)
+            // Shift-and-add with CORRECT shift amounts
             case (current_state)
                 BIT0:  if (multiplier[0])  product <= product + {32'b0, multiplicand};
                 BIT1:  if (multiplier[1])  product <= product + ({31'b0, multiplicand, 1'b0});
@@ -106,13 +103,13 @@ module multiplier_coprocessor (
                 BIT10: if (multiplier[10]) product <= product + ({22'b0, multiplicand, 10'b0});
                 BIT11: if (multiplier[11]) product <= product + ({21'b0, multiplicand, 11'b0});
                 BIT12: if (multiplier[12]) product <= product + ({20'b0, multiplicand, 12'b0});
-                BIT13: if (multiplier[13]) product <= product + ({19'b0, multiplicand, 13'b0}); // FIXED
-                BIT14: if (multiplier[14]) product <= product + ({18'b0, multiplicand, 14'b0}); // FIXED
+                BIT13: if (multiplier[13]) product <= product + ({19'b0, multiplicand, 13'b0});  // FIXED
+                BIT14: if (multiplier[14]) product <= product + ({18'b0, multiplicand, 14'b0});  // FIXED
                 BIT15: if (multiplier[15]) product <= product + ({17'b0, multiplicand, 15'b0});
                 BIT16: if (multiplier[16]) product <= product + ({16'b0, multiplicand, 16'b0});
                 BIT17: if (multiplier[17]) product <= product + ({15'b0, multiplicand, 17'b0});
                 BIT18: if (multiplier[18]) product <= product + ({14'b0, multiplicand, 18'b0});
-                BIT19: if (multiplier[19]) product <= product + ({13'b0, multiplicand, 19'b0}); // FIXED
+                BIT19: if (multiplier[19]) product <= product + ({13'b0, multiplicand, 19'b0});  // FIXED
                 BIT20: if (multiplier[20]) product <= product + ({12'b0, multiplicand, 20'b0});
                 BIT21: if (multiplier[21]) product <= product + ({11'b0, multiplicand, 21'b0});
                 BIT22: if (multiplier[22]) product <= product + ({10'b0, multiplicand, 22'b0});
@@ -130,7 +127,7 @@ module multiplier_coprocessor (
         end
     end
     
-    // Next state logic - ensures 33 total cycles
+    // Next state logic
     always_comb begin
         next_state = current_state;
         case (current_state)
@@ -167,39 +164,36 @@ module multiplier_coprocessor (
             BIT29:  next_state = BIT30;
             BIT30:  next_state = BIT31;
             BIT31:  next_state = FINISH;
-            FINISH: next_state = IDLE;  // Only spend 1 cycle in FINISH
+            FINISH: next_state = IDLE;
             default: next_state = IDLE;
         endcase
     end
     
-    // CRITICAL: busy should NOT include FINISH state to get proper 33-cycle timing
     assign busy = (current_state != IDLE) && (current_state != FINISH);
     assign done = (current_state == FINISH);
     
-    // Apply sign correction for signed multiplication
+    // Sign correction
     logic [63:0] signed_product;
     assign signed_product = result_sign ? (~product + 64'd1) : product;
     
-    // Proper output selection based on instruction type
+    // Output selection
     logic [63:0] final_product;
-    
     always_comb begin
         case (funct3_reg)
-            3'b000: final_product = signed_product;  // MUL - signed
-            3'b001: final_product = signed_product;  // MULH - signed
-            3'b010: final_product = signed_product;  // MULHSU - signed
-            3'b011: final_product = product;         // MULHU - unsigned
+            3'b000: final_product = signed_product;  // MUL
+            3'b001: final_product = signed_product;  // MULH
+            3'b010: final_product = signed_product;  // MULHSU
+            3'b011: final_product = product;         // MULHU
             default: final_product = product;
         endcase
     end
     
-    // Select appropriate 32-bit slice for result
     always_comb begin
         case (funct3_reg)
-            3'b000: result = final_product[31:0];   // MUL - lower 32 bits
-            3'b001: result = final_product[63:32];  // MULH - upper 32 bits
-            3'b010: result = final_product[63:32];  // MULHSU - upper 32 bits
-            3'b011: result = final_product[63:32];  // MULHU - upper 32 bits
+            3'b000: result = final_product[31:0];   // MUL
+            3'b001: result = final_product[63:32];  // MULH
+            3'b010: result = final_product[63:32];  // MULHSU
+            3'b011: result = final_product[63:32];  // MULHU
             default: result = final_product[31:0];
         endcase
     end
