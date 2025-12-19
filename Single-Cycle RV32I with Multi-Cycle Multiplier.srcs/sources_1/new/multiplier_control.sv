@@ -89,8 +89,9 @@ module multiplier_control (
     // Start multiplication immediately when detected (same cycle)
     assign mult_start = (current_state == M_IDLE) && mult_detected;
     
-    // Stall during BUSY and COMPLETE states (33 cycles total)
-    assign stall_cpu = (current_state == M_BUSY) || (current_state == M_COMPLETE);
+    // CRITICAL FIX: Stall immediately if MUL detected in IDLE, or if BUSY.
+    // We do NOT stall in M_COMPLETE to allow the write-back and PC advance.
+    assign stall_cpu = (current_state == M_BUSY) || (mult_detected && current_state == M_IDLE);
     
     // Write pending flag for register file
     assign mult_write_pending = pending_write;
