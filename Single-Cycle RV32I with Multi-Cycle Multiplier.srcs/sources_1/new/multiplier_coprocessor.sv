@@ -32,13 +32,27 @@ module multiplier_coprocessor (
     logic        result_sign;
     logic [31:0] a_reg, b_reg;
     
-    // Sign determination
+    // --- INPUT DECODING (Combinational) ---
+    // We must determine signs based on INPUTS (funct3) to capture correctly in IDLE
+    logic sign_a_in, sign_b_in;
+    always_comb begin
+        case (funct3)
+            3'b000: begin sign_a_in = 1'b1; sign_b_in = 1'b1; end  // MUL
+            3'b001: begin sign_a_in = 1'b1; sign_b_in = 1'b1; end  // MULH
+            3'b010: begin sign_a_in = 1'b1; sign_b_in = 1'b0; end  // MULHSU
+            3'b011: begin sign_a_in = 1'b0; sign_b_in = 1'b0; end  // MULHU
+            default: begin sign_a_in = 1'b1; sign_b_in = 1'b1; end
+        endcase
+    end
+
+    // --- REGISTERED DECODING ---
+    // Used for result calculation (stable during operation)
     always_comb begin
         case (funct3_reg)
-            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end  // MUL
-            3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end  // MULH
-            3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end  // MULHSU
-            3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end  // MULHU
+            3'b000: begin sign_a = 1'b1; sign_b = 1'b1; end
+            3'b001: begin sign_a = 1'b1; sign_b = 1'b1; end
+            3'b010: begin sign_a = 1'b1; sign_b = 1'b0; end
+            3'b011: begin sign_a = 1'b0; sign_b = 1'b0; end
             default: begin sign_a = 1'b1; sign_b = 1'b1; end
         endcase
     end
@@ -51,16 +65,17 @@ module multiplier_coprocessor (
         return ~val + 32'd1;
     endfunction
     
-    // Absolute values
-    logic [31:0] abs_a, abs_b;
-    assign abs_a = get_abs(a_reg, sign_a);
-    assign abs_b = get_abs(b_reg, sign_b);
+    // --- CAPTURE LOGIC ---
+    // Calculate absolute values based on INPUTS for immediate capture
+    logic [31:0] abs_a_in, abs_b_in;
+    assign abs_a_in = get_abs(a, sign_a_in);
+    assign abs_b_in = get_abs(b, sign_b_in);
     
-    // Zero handling
+    // Zero handling (uses registered values)
     logic special_zero_case;
     assign special_zero_case = (a_reg == 32'h0) || (b_reg == 32'h0);
     
-    // Result sign calculation
+    // Result sign calculation (uses registered values)
     logic a_neg, b_neg;
     assign a_neg = sign_a && a_reg[31] && !(a_reg == 32'h80000000 && special_zero_case);
     assign b_neg = sign_b && b_reg[31] && !(b_reg == 32'h80000000 && special_zero_case);
@@ -82,13 +97,14 @@ module multiplier_coprocessor (
             if (start && current_state == IDLE) begin
                 a_reg <= a;
                 b_reg <= b;
-                multiplicand <= abs_a;
-                multiplier <= abs_b;
+                // CRITICAL FIX: Capture calculated absolute values immediately
+                multiplicand <= abs_a_in; 
+                multiplier <= abs_b_in;
                 product <= 64'b0;
                 funct3_reg <= funct3;
             end
             
-            // Shift-and-add with CORRECT shift amounts
+            // Shift-and-add
             case (current_state)
                 BIT0:  if (multiplier[0])  product <= product + {32'b0, multiplicand};
                 BIT1:  if (multiplier[1])  product <= product + ({31'b0, multiplicand, 1'b0});
@@ -103,13 +119,13 @@ module multiplier_coprocessor (
                 BIT10: if (multiplier[10]) product <= product + ({22'b0, multiplicand, 10'b0});
                 BIT11: if (multiplier[11]) product <= product + ({21'b0, multiplicand, 11'b0});
                 BIT12: if (multiplier[12]) product <= product + ({20'b0, multiplicand, 12'b0});
-                BIT13: if (multiplier[13]) product <= product + ({19'b0, multiplicand, 13'b0});  // FIXED
-                BIT14: if (multiplier[14]) product <= product + ({18'b0, multiplicand, 14'b0});  // FIXED
+                BIT13: if (multiplier[13]) product <= product + ({19'b0, multiplicand, 13'b0});
+                BIT14: if (multiplier[14]) product <= product + ({18'b0, multiplicand, 14'b0});
                 BIT15: if (multiplier[15]) product <= product + ({17'b0, multiplicand, 15'b0});
                 BIT16: if (multiplier[16]) product <= product + ({16'b0, multiplicand, 16'b0});
                 BIT17: if (multiplier[17]) product <= product + ({15'b0, multiplicand, 17'b0});
                 BIT18: if (multiplier[18]) product <= product + ({14'b0, multiplicand, 18'b0});
-                BIT19: if (multiplier[19]) product <= product + ({13'b0, multiplicand, 19'b0});  // FIXED
+                BIT19: if (multiplier[19]) product <= product + ({13'b0, multiplicand, 19'b0});
                 BIT20: if (multiplier[20]) product <= product + ({12'b0, multiplicand, 20'b0});
                 BIT21: if (multiplier[21]) product <= product + ({11'b0, multiplicand, 21'b0});
                 BIT22: if (multiplier[22]) product <= product + ({10'b0, multiplicand, 22'b0});
