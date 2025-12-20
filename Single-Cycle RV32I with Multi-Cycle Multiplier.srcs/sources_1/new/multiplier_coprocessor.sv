@@ -55,7 +55,7 @@ module multiplier_coprocessor (
     logic        result_sign;
     logic [31:0] a_reg, b_reg;
     
-    // --- INPUT DECODING (Combinational) ---
+    // --- INPUT DECODING ---
     // We must determine signs based on INPUTS (funct3) to capture correctly in IDLE
     logic sign_a_in, sign_b_in;
     always_comb begin
