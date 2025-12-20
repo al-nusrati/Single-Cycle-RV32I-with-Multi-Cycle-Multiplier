@@ -5,291 +5,238 @@ RV32IM Processor Simulation Debug Log
 Starting reset sequence...
 Reset released at t=20000
 
-[Cycle    1 | T=25000] PC=0x00000000 | Instr=0x00a00093 (I-type)
-        → Writing x1 = 0x0000000a (10)
-[Cycle    2 | T=35000] PC=0x00000004 | Instr=0x01400113 (I-type)
-        → Writing x2 = 0x00000014 (20)
-[Cycle    3 | T=45000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
-        → Writing x5 = 0x0000001e (30)
-        ⚡ MULTIPLY STARTED: 10 × 20
-[Cycle    4 | T=55000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+[Cycle    1 | T=25000] PC=0x00000000 | Instr=0x00300193 (I-type)
+        → Writing x3 = 0x00000003 (3)
+[Cycle    2 | T=35000] PC=0x00000004 | Instr=0xffffffff (Unknown)
+[Cycle    3 | T=45000] PC=0x00000008 | Instr=0x00300213 (I-type)
+        → Writing x4 = 0x00000003 (3)
+[Cycle    4 | T=55000] PC=0x0000000c | Instr=0xffffffff (Unknown)
+[Cycle    5 | T=65000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
+        → Writing x5 = 0x00000000 (0)
+        ⚡ MULTIPLY STARTED: 0 × 0
+[Cycle    6 | T=75000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
         ⏳ MULT_BUSY | State=1 | Product=0x0000000000000000 | Stalled=1
-[Cycle    5 | T=65000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+[Cycle    7 | T=85000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
         ⏳ MULT_BUSY | State=2 | Product=0x0000000000000000 | Stalled=1
-[Cycle    6 | T=75000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+[Cycle    8 | T=95000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
         ⏳ MULT_BUSY | State=3 | Product=0x0000000000000000 | Stalled=1
-[Cycle    7 | T=85000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+[Cycle    9 | T=105000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=4 | Product=0x0000000000000028 | Stalled=1
-[Cycle    8 | T=95000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=4 | Product=0x0000000000000000 | Stalled=1
+[Cycle   10 | T=115000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=5 | Product=0x0000000000000028 | Stalled=1
-[Cycle    9 | T=105000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=5 | Product=0x0000000000000000 | Stalled=1
+[Cycle   11 | T=125000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=6 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   10 | T=115000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=6 | Product=0x0000000000000000 | Stalled=1
+[Cycle   12 | T=135000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=7 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   11 | T=125000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=7 | Product=0x0000000000000000 | Stalled=1
+[Cycle   13 | T=145000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=8 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   12 | T=135000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=8 | Product=0x0000000000000000 | Stalled=1
+[Cycle   14 | T=155000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=9 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   13 | T=145000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=9 | Product=0x0000000000000000 | Stalled=1
+[Cycle   15 | T=165000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=10 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   14 | T=155000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=10 | Product=0x0000000000000000 | Stalled=1
+[Cycle   16 | T=175000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=11 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   15 | T=165000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=11 | Product=0x0000000000000000 | Stalled=1
+[Cycle   17 | T=185000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=12 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   16 | T=175000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=12 | Product=0x0000000000000000 | Stalled=1
+[Cycle   18 | T=195000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=13 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   17 | T=185000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=13 | Product=0x0000000000000000 | Stalled=1
+[Cycle   19 | T=205000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=14 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   18 | T=195000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=14 | Product=0x0000000000000000 | Stalled=1
+[Cycle   20 | T=215000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=15 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   19 | T=205000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=15 | Product=0x0000000000000000 | Stalled=1
+[Cycle   21 | T=225000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=16 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   20 | T=215000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=16 | Product=0x0000000000000000 | Stalled=1
+[Cycle   22 | T=235000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=17 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   21 | T=225000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=17 | Product=0x0000000000000000 | Stalled=1
+[Cycle   23 | T=245000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=18 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   22 | T=235000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=18 | Product=0x0000000000000000 | Stalled=1
+[Cycle   24 | T=255000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=19 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   23 | T=245000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=19 | Product=0x0000000000000000 | Stalled=1
+[Cycle   25 | T=265000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=20 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   24 | T=255000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=20 | Product=0x0000000000000000 | Stalled=1
+[Cycle   26 | T=275000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=21 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   25 | T=265000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=21 | Product=0x0000000000000000 | Stalled=1
+[Cycle   27 | T=285000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=22 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   26 | T=275000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=22 | Product=0x0000000000000000 | Stalled=1
+[Cycle   28 | T=295000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=23 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   27 | T=285000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=23 | Product=0x0000000000000000 | Stalled=1
+[Cycle   29 | T=305000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=24 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   28 | T=295000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=24 | Product=0x0000000000000000 | Stalled=1
+[Cycle   30 | T=315000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=25 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   29 | T=305000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=25 | Product=0x0000000000000000 | Stalled=1
+[Cycle   31 | T=325000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=26 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   30 | T=315000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=26 | Product=0x0000000000000000 | Stalled=1
+[Cycle   32 | T=335000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=27 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   31 | T=325000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=27 | Product=0x0000000000000000 | Stalled=1
+[Cycle   33 | T=345000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=28 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   32 | T=335000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=28 | Product=0x0000000000000000 | Stalled=1
+[Cycle   34 | T=355000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=29 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   33 | T=345000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=29 | Product=0x0000000000000000 | Stalled=1
+[Cycle   35 | T=365000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=30 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   34 | T=355000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=30 | Product=0x0000000000000000 | Stalled=1
+[Cycle   36 | T=375000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=31 | Product=0x00000000000000c8 | Stalled=1
-[Cycle   35 | T=365000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+        ⏳ MULT_BUSY | State=31 | Product=0x0000000000000000 | Stalled=1
+[Cycle   37 | T=385000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=32 | Product=0x00000000000000c8 | Stalled=1
+        ⏳ MULT_BUSY | State=32 | Product=0x0000000000000000 | Stalled=1
 
 *** MULTIPLICATION COMPLETED ***
-Operand A (multiplicand): 10 (0x0000000a)
-Operand B (multiplier):   20 (0x00000014)
-64-bit Product:           0x00000000000000c8
-Signed Product:           0x00000000000000c8
-32-bit Result:            200 (0x000000c8)
-Expected (software):      200
-funct3:                   000
+Operand A (multiplicand): 0 (0x00000000)
+Operand B (multiplier):   0 (0x00000000)
+64-bit Product:           0x0000000000000000
+Signed Product:           0x0000000000000000
+32-bit Result:            0 (0x00000000)
+Expected (software):      0
+funct3:                   001
 ********************************
 
-[Cycle   36 | T=375000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
-        → Writing x5 = 0x000000c8 (200)
-        ✓ MULTIPLY DONE: Result = 0x000000c8 (200)
-[Cycle   37 | T=385000] PC=0x00000008 | Instr=0x022082b3 (M-ext)
+[Cycle   38 | T=395000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
         → Writing x5 = 0x00000000 (0)
-[Cycle   38 | T=395000] PC=0x0000000c | Instr=0x00500193 (I-type)
-        → Writing x3 = 0x00000005 (5)
-[Cycle   39 | T=405000] PC=0x00000010 | Instr=0x00000013 (I-type)
-        → Writing x0 = 0x00000000 (0)
+        ✓ MULTIPLY DONE: Result = 0x00000000 (0)
+[Cycle   39 | T=405000] PC=0x00000010 | Instr=0x022092b3 (M-ext)
+        → Writing x5 = 0x00000000 (0)
 [Cycle   40 | T=415000] PC=0x00000014 | Instr=0x00000013 (I-type)
         → Writing x0 = 0x00000000 (0)
-[Cycle   41 | T=425000] PC=0x00000018 | Instr=0xff600213 (I-type)
-        → Writing x4 = 0xfffffff6 (-10)
-[Cycle   42 | T=435000] PC=0x0000001c | Instr=0x01900293 (I-type)
-        → Writing x5 = 0x00000019 (25)
-[Cycle   43 | T=445000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⚡ MULTIPLY STARTED: 4294967286 × 25
-[Cycle   44 | T=455000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=1 | Product=0x0000000000000000 | Stalled=1
-[Cycle   45 | T=465000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=2 | Product=0x000000000000000a | Stalled=1
-[Cycle   46 | T=475000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=3 | Product=0x000000000000000a | Stalled=1
-[Cycle   47 | T=485000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=4 | Product=0x000000000000000a | Stalled=1
-[Cycle   48 | T=495000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=5 | Product=0x000000000000005a | Stalled=1
-[Cycle   49 | T=505000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=6 | Product=0x00000000000000fa | Stalled=1
-[Cycle   50 | T=515000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=7 | Product=0x00000000000000fa | Stalled=1
-[Cycle   51 | T=525000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=8 | Product=0x00000000000000fa | Stalled=1
-[Cycle   52 | T=535000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=9 | Product=0x00000000000000fa | Stalled=1
-[Cycle   53 | T=545000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=10 | Product=0x00000000000000fa | Stalled=1
-[Cycle   54 | T=555000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=11 | Product=0x00000000000000fa | Stalled=1
-[Cycle   55 | T=565000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=12 | Product=0x00000000000000fa | Stalled=1
-[Cycle   56 | T=575000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=13 | Product=0x00000000000000fa | Stalled=1
-[Cycle   57 | T=585000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=14 | Product=0x00000000000000fa | Stalled=1
-[Cycle   58 | T=595000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=15 | Product=0x00000000000000fa | Stalled=1
-[Cycle   59 | T=605000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=16 | Product=0x00000000000000fa | Stalled=1
-[Cycle   60 | T=615000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=17 | Product=0x00000000000000fa | Stalled=1
-[Cycle   61 | T=625000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=18 | Product=0x00000000000000fa | Stalled=1
-[Cycle   62 | T=635000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=19 | Product=0x00000000000000fa | Stalled=1
-[Cycle   63 | T=645000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=20 | Product=0x00000000000000fa | Stalled=1
-[Cycle   64 | T=655000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=21 | Product=0x00000000000000fa | Stalled=1
-[Cycle   65 | T=665000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=22 | Product=0x00000000000000fa | Stalled=1
-[Cycle   66 | T=675000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=23 | Product=0x00000000000000fa | Stalled=1
-[Cycle   67 | T=685000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=24 | Product=0x00000000000000fa | Stalled=1
-[Cycle   68 | T=695000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=25 | Product=0x00000000000000fa | Stalled=1
-[Cycle   69 | T=705000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=26 | Product=0x00000000000000fa | Stalled=1
-[Cycle   70 | T=715000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=27 | Product=0x00000000000000fa | Stalled=1
-[Cycle   71 | T=725000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=28 | Product=0x00000000000000fa | Stalled=1
-[Cycle   72 | T=735000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=29 | Product=0x00000000000000fa | Stalled=1
-[Cycle   73 | T=745000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=30 | Product=0x00000000000000fa | Stalled=1
-[Cycle   74 | T=755000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=31 | Product=0x00000000000000fa | Stalled=1
-[Cycle   75 | T=765000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=32 | Product=0x00000000000000fa | Stalled=1
-
-*** MULTIPLICATION COMPLETED ***
-Operand A (multiplicand): 10 (0x0000000a)
-Operand B (multiplier):   25 (0x00000019)
-64-bit Product:           0x00000000000000fa
-Signed Product:           0xffffffffffffff06
-32-bit Result:            4294967046 (0xffffff06)
-Expected (software):      250
-funct3:                   000
-********************************
-
-[Cycle   76 | T=775000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0xffffff06 (-250)
-        ✓ MULTIPLY DONE: Result = 0xffffff06 (-250)
-[Cycle   77 | T=785000] PC=0x00000020 | Instr=0x02520333 (M-ext)
-        → Writing x6 = 0x00000000 (0)
-[Cycle   78 | T=795000] PC=0x00000024 | Instr=0x00000013 (I-type)
+[Cycle   41 | T=425000] PC=0x00000018 | Instr=0x00000013 (I-type)
         → Writing x0 = 0x00000000 (0)
-[Cycle   79 | T=805000] PC=0x00000028 | Instr=0x00000013 (I-type)
-        → Writing x0 = 0x00000000 (0)
-[Cycle   80 | T=815000] PC=0x0000002c | Instr=0xff800393 (I-type)
-        → Writing x7 = 0xfffffff8 (-8)
-[Cycle   81 | T=825000] PC=0x00000030 | Instr=0xffa00413 (I-type)
-        → Writing x8 = 0xfffffffa (-6)
-[Cycle   82 | T=835000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⚡ MULTIPLY STARTED: 4294967288 × 4294967290
-[Cycle   83 | T=845000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=1 | Product=0x0000000000000000 | Stalled=1
-[Cycle   84 | T=855000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=2 | Product=0x0000000000000000 | Stalled=1
-[Cycle   85 | T=865000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=3 | Product=0x0000000000000010 | Stalled=1
-[Cycle   86 | T=875000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=4 | Product=0x0000000000000030 | Stalled=1
-[Cycle   87 | T=885000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=5 | Product=0x0000000000000030 | Stalled=1
-[Cycle   88 | T=895000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=6 | Product=0x0000000000000030 | Stalled=1
-[Cycle   89 | T=905000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=7 | Product=0x0000000000000030 | Stalled=1
-[Cycle   90 | T=915000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=8 | Product=0x0000000000000030 | Stalled=1
-[Cycle   91 | T=925000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=9 | Product=0x0000000000000030 | Stalled=1
-[Cycle   92 | T=935000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=10 | Product=0x0000000000000030 | Stalled=1
-[Cycle   93 | T=945000] PC=0x00000034 | Instr=0x028384b3 (M-ext)
-        → Writing x9 = 0x00000000 (0)
-        ⏳ MULT_BUSY | State=11 |
+[Cycle   42 | T=435000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   43 | T=445000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   44 | T=455000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   45 | T=465000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   46 | T=475000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   47 | T=485000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   48 | T=495000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   49 | T=505000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   50 | T=515000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   51 | T=525000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   52 | T=535000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   53 | T=545000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   54 | T=555000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   55 | T=565000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   56 | T=575000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   57 | T=585000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   58 | T=595000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   59 | T=605000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   60 | T=615000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   61 | T=625000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   62 | T=635000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   63 | T=645000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   64 | T=655000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   65 | T=665000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   66 | T=675000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   67 | T=685000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   68 | T=695000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   69 | T=705000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   70 | T=715000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   71 | T=725000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   72 | T=735000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   73 | T=745000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   74 | T=755000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   75 | T=765000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   76 | T=775000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   77 | T=785000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x00000020 (32)
+        → Jump to 0x0000001c
+[Cycle   78 | T=795000] PC=0x0000001c | Instr=0x0000006f (Unknown)
+        → Writing x0 = 0x0000
