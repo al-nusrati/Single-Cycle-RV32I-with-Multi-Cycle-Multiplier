@@ -2,8 +2,8 @@ module top #(
     parameter DATA_WIDTH = 32,
     parameter ADDRESS_WIDTH = 32
 )(
-    input  logic clk,
-    input  logic reset
+    input  logic clk,   // Source: Testbench
+    input  logic reset  // Source: Testbench
 );
 
     // Internal signals
@@ -47,15 +47,13 @@ module top #(
         .pc_address(pc_address)
     );
     
-    // Instruction Memory - FIXED: Use word-aligned address
+    // Instruction Memory
     instruction_memory imem (
         .address(pc_address[9:2]),  // Word addressing for 256 instructions
         .instruction(instruction)
     );
     
     // Register File with special multiplier write enable
-    // CRITICAL FIX: During multiplication, we should NOT write anything
-    // until mult_write_pending is set by the multiplier control
     register_file reg_file (
         .clk(clk),
         .reset(reset),
@@ -90,8 +88,7 @@ module top #(
         .out(alu_operand2)
     );
     
-    // ALU with multiplier interface - FIXED: Will output 'a' during multiplication
-    // instead of 0 to prevent corrupting registers
+    // ALU with multiplier interface
     alu alu (
         .a(alu_operand_a),
         .b(alu_operand2),
@@ -102,21 +99,20 @@ module top #(
         .zero(zero)
     );
     
-    // 32-Cycle Multiplier Co-Processor - FIXED: Uses data2 (register) not alu_operand2
-    // Also handles 0x80000000 × 0 edge case correctly
+    // 32-Cycle Multiplier Co-Processor
     multiplier_coprocessor multiplier (
         .clk(clk),
         .reset(reset),
         .start(mult_start),
         .a(data1),              // rs1 register value
-        .b(data2),              // rs2 register value (NOT immediate!)
+        .b(data2),              // rs2 register value
         .funct3(instruction[14:12]),
         .result(mult_result),
         .done(mult_done),
         .busy(mult_busy)
     );
     
-    // Multiplier Control FSM - FIXED: Proper 33-cycle stall timing
+    // Multiplier Control FSM
     multiplier_control mult_ctrl (
         .clk(clk),
         .reset(reset),
@@ -157,7 +153,7 @@ module top #(
         .write_data(reg_write_data)
     );
     
-    // Branch Comparison Logic (inline, no separate module)
+    // Branch Comparison Logic - Inline Logic
     always_comb begin
         if (branch) begin
             case (instruction[14:12])  // funct3
@@ -199,3 +195,16 @@ module top #(
     assign mult_instruction = (instruction[6:0] == 7'b0110011) && (instruction[25] == 1'b1);
 
 endmodule
+
+// Explanation:
+// This is the Top-Level module (The "Motherboard"). It instantiates all the components 
+// and wires them together to form the complete Single-Cycle RISC-V Processor with 
+// Multi-Cycle Multiplier support.
+//
+// 1. **Data Path**: It connects the flow: PC -> I-Mem -> RegFile -> ALU -> D-Mem -> WB Mux.
+// 2. **Control Path**: It connects the Control Unit signals to the Muxes and Enables.
+// 3. **Stall Integration**: This is the most complex part. The `stall_cpu` signal from the 
+//    Multiplier Control is wired to:
+//    - The `pc_next` logic (to freeze the PC).
+//    - The `reg_file` write enable (to prevent writing garbage).
+//    This ensures the single-cycle processor pauses correctly to accommodate the 32-cycle multiplier.

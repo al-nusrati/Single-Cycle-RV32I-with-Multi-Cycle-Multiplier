@@ -1,13 +1,13 @@
 module multiplier_coprocessor (
-    input  logic        clk,
-    input  logic        reset,
-    input  logic        start,
-    input  logic [31:0] a,
-    input  logic [31:0] b,
-    input  logic [2:0]  funct3,
-    output logic [31:0] result,
-    output logic        done,
-    output logic        busy
+    input  logic        clk,    // Source: System Clock
+    input  logic        reset,  // Source: System Reset
+    input  logic        start,  // Source: Multiplier Control
+    input  logic [31:0] a,      // Source: Register File (rs1)
+    input  logic [31:0] b,      // Source: Register File (rs2)
+    input  logic [2:0]  funct3, // Source: Instruction [14:12]
+    output logic [31:0] result, // Dest: ALU
+    output logic        done,   // Dest: Multiplier Control & ALU
+    output logic        busy    // Dest: Multiplier Control
 );
 
     typedef enum logic [5:0] {
@@ -97,7 +97,7 @@ module multiplier_coprocessor (
             if (start && current_state == IDLE) begin
                 a_reg <= a;
                 b_reg <= b;
-                // CRITICAL FIX: Capture calculated absolute values immediately
+                
                 multiplicand <= abs_a_in; 
                 multiplier <= abs_b_in;
                 product <= 64'b0;
@@ -215,3 +215,17 @@ module multiplier_coprocessor (
     end
 
 endmodule
+
+// Explanation:
+// This module implements a 32-cycle hardware multiplier using the shift-and-add algorithm.
+//
+// 1. **Algorithm**: It mimics how humans multiply on paper. It iterates 32 times. In each cycle, 
+//    if the LSB of the multiplier is 1, it adds the multiplicand to the product, then shifts.
+// 2. **Signed/Unsigned Handling**: It converts all inputs to positive (absolute) values first, 
+//    performs unsigned multiplication, and then re-applies the correct sign at the end based on 
+//    `funct3` (MUL, MULH, etc.).
+// 3. **64-bit Internal Precision**: Even though registers are 32-bit, the internal `product` is 
+//    64-bit to capture the full result. The output mux selects the upper or lower 32 bits.
+// 4. **Critical Timing Fix**: The logic `multiplicand <= abs_a_in` uses *combinational* inputs. 
+//    This ensures that when the `start` signal arrives, we capture the valid data *before* the 
+//    pipeline stalls or registers change. This prevents the "Ghost Data" bug.

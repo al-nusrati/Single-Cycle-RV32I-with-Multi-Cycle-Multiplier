@@ -3,15 +3,15 @@ module register_file #(
     parameter NUM_REGISTERS = 32,
     parameter ADDR_WIDTH = 5
 )(
-    input  logic                      clk,
-    input  logic                      reset,
-    input  logic                      write_enable,
-    input  logic [ADDR_WIDTH-1:0]     rs1,
-    input  logic [ADDR_WIDTH-1:0]     rs2,
-    input  logic [ADDR_WIDTH-1:0]     rd,
-    input  logic [DATA_WIDTH-1:0]     write_data,
-    output logic [DATA_WIDTH-1:0]     out_rs1,
-    output logic [DATA_WIDTH-1:0]     out_rs2
+    input  logic                      clk,          // Source: System Clock
+    input  logic                      reset,        // Source: System Reset
+    input  logic                      write_enable, // Source: Control Unit (gated by stall logic)
+    input  logic [ADDR_WIDTH-1:0]     rs1,          // Source: Instruction [19:15]
+    input  logic [ADDR_WIDTH-1:0]     rs2,          // Source: Instruction [24:20]
+    input  logic [ADDR_WIDTH-1:0]     rd,           // Source: Instruction [11:7]
+    input  logic [DATA_WIDTH-1:0]     write_data,   // Source: Write-Back Mux
+    output logic [DATA_WIDTH-1:0]     out_rs1,      // Dest: ALU (Operand A) & Multiplier
+    output logic [DATA_WIDTH-1:0]     out_rs2       // Dest: ALU (Operand B), Multiplier & Data Memory
 );
     logic [DATA_WIDTH-1:0] registers [0:NUM_REGISTERS-1];
     
@@ -38,15 +38,15 @@ module register_file #(
     end
 endmodule
 
-
-
-
 // Explanation:
-// This SystemVerilog module implements a register file for a RISC-V CPU. It contains 32 registers, each 32 bits wide.
-// The module supports reading two source registers (rs1 and rs2) and writing to a destination register (rd).
-// The write operation occurs on the rising edge of the clock if the write_enable signal is high and rd is not x0 (which is always zero).
-// The module also includes a reset functionality that initializes all registers to zero when the reset signal is high.
-
-// always_ff is used for sequential logic (writing to registers on clock edge), while always_comb is used for combinational logic (reading register values).
-// sequential logic: writing to registers on clock edge when write_enable is high
-// combinational logic: reading register values when rs1 or rs2 changes
+// This is the processor's internal storage, implementing the 32 General Purpose Registers (x0-x31).
+//
+// 1. **Three-Port Architecture**: It allows simultaneous reading of two registers (`rs1`, `rs2`) 
+//    and writing of one register (`rd`) in a single clock cycle.
+// 2. **x0 Hardwiring**: In RISC-V, register `x0` is hardwired to zero. The logic `rd != 5'b00000` 
+//    prevents writing to x0, and the read logic explicitly returns 0 if x0 is requested.
+// 3. **Write Logic & Stalls**: The `write_enable` signal is critical. In the Top module, this signal 
+//    is logic: `(reg_write && !stall_cpu) || mult_write_pending`.
+//    - Normally, we write if the instruction says so (`reg_write`).
+//    - BUT, if the CPU is stalled (multiplier running), we forbid writing to prevent corruption.
+//    - UNLESS, the multiplier just finished (`mult_write_pending`), in which case we allow the write.

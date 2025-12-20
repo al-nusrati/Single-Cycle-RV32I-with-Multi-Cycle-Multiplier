@@ -1,11 +1,11 @@
 module data_memory (
-    input  logic        clk,
-    input  logic        mem_read,
-    input  logic        mem_write,
-    input  logic [2:0]  funct3,
-    input  logic [31:0] address,
-    input  logic [31:0] write_data,
-    output logic [31:0] read_data
+    input  logic        clk,        // Source: System Clock
+    input  logic        mem_read,   // Source: Control Unit
+    input  logic        mem_write,  // Source: Control Unit
+    input  logic [2:0]  funct3,     // Source: Instruction [14:12]
+    input  logic [31:0] address,    // Source: ALU Result
+    input  logic [31:0] write_data, // Source: Register File (rs2)
+    output logic [31:0] read_data   // Dest: Write-Back Mux
 );
     logic [7:0] mem [0:1023]; // 1KB byte-addressable memory
     
@@ -65,11 +65,11 @@ module data_memory (
 endmodule
 
 // Explanation:
-// This SystemVerilog module implements a data memory for a RISC-V CPU. It supports reading and writing data of different sizes (byte, half-word, word)
-// based on the funct3 field from the instruction. The memory is 1KB in size, organized as an array of 8-bit bytes.
-// The module uses combinational logic to read data from memory when the mem_read signal is highest, applying sign extension or zero extension as needed.
-// The write operation occurs on the rising edge of the clock when the mem_write signal is high, storing data into memory according to the specified size.
-// The module handles the following funct3 codes:
-// LB (000), LH (001), LW (010), LBU (100), LHU (101) for loads
-// SB (000), SH (001), SW (010) for stores
-// The read_data output provides the data read from memory, while write_data is the data to be written to memory.
+// This represents the Random Access Memory (RAM) for data (Heap/Stack).
+//
+// 1. **Byte Addressing**: The memory is an array of 8-bit bytes.
+// 2. **Load Logic**: When reading a Word (`LW`), it concatenates 4 bytes: `mem[addr+3]...mem[addr]`.
+//    It also handles `LB` (Load Byte) by sign-extending the 8-bit value to 32 bits, and `LBU` 
+//    by zero-extending it.
+// 3. **Store Logic**: When writing, it updates the specific bytes in the array based on the 
+//    address and size (Byte, Half, Word).

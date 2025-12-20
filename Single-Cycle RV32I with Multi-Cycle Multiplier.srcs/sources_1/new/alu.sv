@@ -1,13 +1,13 @@
 module alu #(
     parameter DATA_WIDTH = 32
 )(
-    input  logic [DATA_WIDTH-1:0] a,
-    input  logic [DATA_WIDTH-1:0] b,
-    input  logic [3:0]            alu_control,
-    input  logic [31:0]           mult_result,
-    input  logic                  mult_done,
-    output logic [DATA_WIDTH-1:0] result,
-    output logic                  zero
+    input  logic [DATA_WIDTH-1:0] a,           // Source: ALU Mux A
+    input  logic [DATA_WIDTH-1:0] b,           // Source: ALU Mux B
+    input  logic [3:0]            alu_control, // Source: ALU Control Unit
+    input  logic [31:0]           mult_result, // Source: Multiplier Co-processor
+    input  logic                  mult_done,   // Source: Multiplier Co-processor
+    output logic [DATA_WIDTH-1:0] result,      // Dest: Data Memory & Write-Back Mux
+    output logic                  zero         // Dest: Branch Logic
 );
     localparam ALU_AND   = 4'b0000;
     localparam ALU_OR    = 4'b0001;
@@ -27,10 +27,7 @@ module alu #(
     
     // Detect if current operation is a multiply
     logic is_multiply_op;
-    assign is_multiply_op = (alu_control == ALU_MUL) || 
-                          (alu_control == ALU_MULH) || 
-                          (alu_control == ALU_MULHSU) || 
-                          (alu_control == ALU_MULHU);
+    assign is_multiply_op = (alu_control == ALU_MUL) || (alu_control == ALU_MULH) || (alu_control == ALU_MULHSU) || (alu_control == ALU_MULHU);
     
     always_comb begin
         // For multiply operations: ONLY output result when mult_done is true
@@ -63,3 +60,16 @@ module alu #(
     // Zero flag: For non-multiply operations only
     assign zero = !is_multiply_op ? (a == b) : 1'b0;
 endmodule
+
+// Explanation:
+// The ALU is the computational engine.
+//
+// 1. **Standard Operations**: It performs single-cycle arithmetic (ADD, SUB) and logic (AND, OR, XOR, Shifts).
+// 2. **Co-Processor Integration**: This is a unique feature of this design. The ALU acts as a 
+//    "gateway" for the Multiplier.
+//    - If the operation is a Multiply, the ALU ignores its own adder logic.
+//    - It waits for the `mult_done` signal.
+//    - While waiting, it outputs 0 (safe value).
+//    - When `mult_done` arrives, it passes `mult_result` to the output.
+//    This allows the rest of the pipeline (Memory, Writeback) to treat the Multiplier result 
+//    just like any other ALU result.

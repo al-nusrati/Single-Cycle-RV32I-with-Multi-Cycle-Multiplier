@@ -1,18 +1,18 @@
 module control_unit (
-    input  logic [6:0] opcode,
-    input  logic [6:0] funct7,
-    output logic       reg_write,
-    output logic       alu_src,
-    output logic       mem_read,
-    output logic       mem_write,
-    output logic       mem_to_reg,
-    output logic       branch,
-    output logic       jump,
-    output logic       jalr,
-    output logic       lui,
-    output logic       auipc,
-    output logic [1:0] alu_op,
-    output logic       mult_instruction
+    input  logic [6:0] opcode,           // Source: Instruction [6:0]
+    input  logic [6:0] funct7,           // Source: Instruction [31:25]
+    output logic       reg_write,        // Dest: Register File
+    output logic       alu_src,          // Dest: ALU Source Mux
+    output logic       mem_read,         // Dest: Data Memory
+    output logic       mem_write,        // Dest: Data Memory
+    output logic       mem_to_reg,       // Dest: Write-Back Mux
+    output logic       branch,           // Dest: Branch Logic
+    output logic       jump,             // Dest: PC Logic
+    output logic       jalr,             // Dest: PC Logic
+    output logic       lui,              // Dest: Write-Back Mux
+    output logic       auipc,            // Dest: Write-Back Mux
+    output logic [1:0] alu_op,           // Dest: ALU Control
+    output logic       mult_instruction  // Dest: ALU Control & Multiplier Control
 );
 
     localparam OP_R_TYPE  = 7'b0110011;
@@ -107,11 +107,15 @@ module control_unit (
 
 endmodule
 
-
-
 // Explanation:
-// This SystemVerilog module implements the main control unit for a RISC-V CPU.
-// It decodes the opcode from the instruction to generate various control signals needed for instruction execution.
-// The control signals include register write enable, ALU source selection, memory read/write enables, branch/jump flags, and ALU operation codes.
-// The module supports R-type, I-type, load, store, branch, jump (JAL, JALR), LUI, and AUIPC instructions.
-// The mult_instruction output is set for R-type instructions to indicate multiply operations.
+// This is the "Brain" of the processor. It looks at the Opcode (7 bits) and decides the 
+// overall strategy for the instruction.
+//
+// 1. **Signal Generation**:
+//    - If Opcode is Load (`LW`), it sets `mem_read` and `mem_to_reg`.
+//    - If Opcode is Store (`SW`), it sets `mem_write`.
+//    - If Opcode is Branch (`BEQ`), it sets `branch`.
+// 2. **ALU Op**: It generates a 2-bit `alu_op` code that tells the ALU Control unit 
+//    "Check the funct3/funct7 bits" (for R-type) or "Just Add" (for Loads/Stores).
+// 3. **Multiply Detection**: It checks `funct7` bit 0 to flag if an R-type instruction 
+//    is actually a Multiply (M-extension), signaling the Multiplier Control to take over.

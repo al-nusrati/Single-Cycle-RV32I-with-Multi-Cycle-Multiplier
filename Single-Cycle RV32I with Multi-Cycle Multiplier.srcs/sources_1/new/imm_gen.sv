@@ -1,6 +1,6 @@
 module imm_gen (
-    input  logic [31:0] instruction,
-    output logic [31:0] imm_out
+    input  logic [31:0] instruction, // Source: Instruction Memory
+    output logic [31:0] imm_out      // Dest: ALU Mux & Branch Target Logic
 );
     logic [6:0] opcode;
     assign opcode = instruction[6:0];
@@ -24,9 +24,12 @@ module imm_gen (
 endmodule
 
 // Explanation:
-// This SystemVerilog module generates immediate values for different RISC-V instruction types based on the opcode.
-// It extracts the opcode from the instruction and uses combinational logic to create the appropriate immediate value 
-// according to the instruction format (I-type, S-type, B-type, U-type, J-type).
-// The generated immediate value is sign-extended to 32 bits where applicable.
-// The module uses an always_comb block to ensure that the immediate value is updated whenever the instruction changes.
-// The immediate value is output through the imm_out port for use in the ALU or other parts of the CPU.
+// Instructions often contain small constants (immediates). However, these bits are scattered 
+// in different positions depending on the instruction type (I, S, B, U, J) to keep the register 
+// specifiers (rs1, rs2, rd) in the same place.
+//
+// 1. **Sign Extension**: The module takes the scattered bits and rearranges them into a 32-bit 
+//    integer. Crucially, it performs *sign extension* (replicating the MSB `instruction[31]`) 
+//    so that negative constants remain negative in 32-bit representation.
+// 2. **Combinational Logic**: This happens instantly, so the immediate is ready for the ALU 
+//    in the same cycle as the instruction fetch.

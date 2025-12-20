@@ -1,15 +1,15 @@
 module multiplier_control (
-    input  logic        clk,
-    input  logic        reset,
-    input  logic [6:0]  opcode,
-    input  logic [2:0]  funct3,
-    input  logic [6:0]  funct7,
-    input  logic        mult_done,
-    input  logic        mult_busy,
-    output logic        mult_start,
-    output logic        stall_cpu,
-    output logic [3:0]  alu_control_out,
-    output logic        mult_write_pending
+    input  logic        clk,                // Source: System Clock
+    input  logic        reset,              // Source: System Reset
+    input  logic [6:0]  opcode,             // Source: Instruction [6:0]
+    input  logic [2:0]  funct3,             // Source: Instruction [14:12]
+    input  logic [6:0]  funct7,             // Source: Instruction [31:25]
+    input  logic        mult_done,          // Source: Multiplier Co-processor
+    input  logic        mult_busy,          // Source: Multiplier Co-processor
+    output logic        mult_start,         // Dest: Multiplier Co-processor
+    output logic        stall_cpu,          // Dest: Top Level (PC Logic)
+    output logic [3:0]  alu_control_out,    // Dest: ALU Control
+    output logic        mult_write_pending  // Dest: Register File
 );
     // ALU control codes for multiply operations
     localparam ALU_MUL    = 4'b1010;
@@ -89,7 +89,6 @@ module multiplier_control (
     // Start multiplication immediately when detected (same cycle)
     assign mult_start = (current_state == M_IDLE) && mult_detected;
     
-    // CRITICAL FIX: Stall immediately if MUL detected in IDLE, or if BUSY.
     // We do NOT stall in M_COMPLETE to allow the write-back and PC advance.
     assign stall_cpu = (current_state == M_BUSY) || (mult_detected && current_state == M_IDLE);
     
@@ -100,3 +99,17 @@ module multiplier_control (
     assign alu_control_out = (mult_detected || current_state != M_IDLE) ? alu_control_reg : ALU_ADD;
 
 endmodule
+
+// Explanation:
+// This module acts as the "Traffic Cop" or Hazard Detection Unit for the multiplier.
+//
+// 1. **Detection**: It watches the Opcode. If it sees `0110011` (R-type) AND `funct7[0]=1`, 
+//    it knows a Multiply instruction is present.
+// 2. **Stall Logic**: This is the most critical part. As soon as a Multiply is detected, 
+//    it asserts `stall_cpu`.
+//    - In the Top module, `stall_cpu` forces the PC to keep its current value.
+//    - It also disables Register Writes.
+//    - This effectively "freezes" the fetch/decode stages.
+// 3. **Handshake**: It sends `mult_start` to the co-processor. It waits for `mult_done`.
+// 4. **Release**: When `mult_done` arrives, it drops `stall_cpu` and asserts `mult_write_pending`, 
+//    allowing the result to be written to the Register File and the PC to finally advance.
