@@ -42,7 +42,7 @@ module alu_control (
                             default: alu_control = ALU_ADD;
                         endcase
                     end else begin
-                        // I-TYPE: DON'T check funct7[5] for ADDI!
+                        // I-TYPE: DON'T check funct7[5] for ADDI
                         case (funct3)
                             3'b000: alu_control = ALU_ADD;   // ADDI (always ADD, never SUB!)
                             3'b001: alu_control = ALU_SLL;   // SLLI

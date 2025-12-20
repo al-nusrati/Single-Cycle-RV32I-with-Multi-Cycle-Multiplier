@@ -10,20 +10,43 @@ module multiplier_coprocessor (
     output logic        busy    // Dest: Multiplier Control
 );
 
-    typedef enum logic [5:0] {
-        IDLE    = 6'd0,
-        BIT0    = 6'd1,   BIT1    = 6'd2,   BIT2    = 6'd3,   BIT3    = 6'd4,
-        BIT4    = 6'd5,   BIT5    = 6'd6,   BIT6    = 6'd7,   BIT7    = 6'd8,
-        BIT8    = 6'd9,   BIT9    = 6'd10,  BIT10   = 6'd11,  BIT11   = 6'd12,
-        BIT12   = 6'd13,  BIT13   = 6'd14,  BIT14   = 6'd15,  BIT15   = 6'd16,
-        BIT16   = 6'd17,  BIT17   = 6'd18,  BIT18   = 6'd19,  BIT19   = 6'd20,
-        BIT20   = 6'd21,  BIT21   = 6'd22,  BIT22   = 6'd23,  BIT23   = 6'd24,
-        BIT24   = 6'd25,  BIT25   = 6'd26,  BIT26   = 6'd27,  BIT27   = 6'd28,
-        BIT28   = 6'd29,  BIT29   = 6'd30,  BIT30   = 6'd31,  BIT31   = 6'd32,
-        FINISH  = 6'd33
-    } state_t;
+    // --- State Definitions ---
+    localparam [5:0] IDLE    = 6'd0;
+    localparam [5:0] BIT0    = 6'd1;
+    localparam [5:0] BIT1    = 6'd2;
+    localparam [5:0] BIT2    = 6'd3;
+    localparam [5:0] BIT3    = 6'd4;
+    localparam [5:0] BIT4    = 6'd5;
+    localparam [5:0] BIT5    = 6'd6;
+    localparam [5:0] BIT6    = 6'd7;
+    localparam [5:0] BIT7    = 6'd8;
+    localparam [5:0] BIT8    = 6'd9;
+    localparam [5:0] BIT9    = 6'd10;
+    localparam [5:0] BIT10   = 6'd11;
+    localparam [5:0] BIT11   = 6'd12;
+    localparam [5:0] BIT12   = 6'd13;
+    localparam [5:0] BIT13   = 6'd14;
+    localparam [5:0] BIT14   = 6'd15;
+    localparam [5:0] BIT15   = 6'd16;
+    localparam [5:0] BIT16   = 6'd17;
+    localparam [5:0] BIT17   = 6'd18;
+    localparam [5:0] BIT18   = 6'd19;
+    localparam [5:0] BIT19   = 6'd20;
+    localparam [5:0] BIT20   = 6'd21;
+    localparam [5:0] BIT21   = 6'd22;
+    localparam [5:0] BIT22   = 6'd23;
+    localparam [5:0] BIT23   = 6'd24;
+    localparam [5:0] BIT24   = 6'd25;
+    localparam [5:0] BIT25   = 6'd26;
+    localparam [5:0] BIT26   = 6'd27;
+    localparam [5:0] BIT27   = 6'd28;
+    localparam [5:0] BIT28   = 6'd29;
+    localparam [5:0] BIT29   = 6'd30;
+    localparam [5:0] BIT30   = 6'd31;
+    localparam [5:0] BIT31   = 6'd32;
+    localparam [5:0] FINISH  = 6'd33;
     
-    state_t current_state, next_state;
+    logic [5:0] current_state, next_state;
     
     logic [31:0] multiplicand, multiplier;
     logic [63:0] product;
@@ -97,7 +120,6 @@ module multiplier_coprocessor (
             if (start && current_state == IDLE) begin
                 a_reg <= a;
                 b_reg <= b;
-                
                 multiplicand <= abs_a_in; 
                 multiplier <= abs_b_in;
                 product <= 64'b0;

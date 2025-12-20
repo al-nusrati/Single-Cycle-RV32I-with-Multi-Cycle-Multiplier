@@ -15,7 +15,7 @@ module data_memory (
         end
     end
     
-    // Read logic (combinational)
+    // Read logic
     always_comb begin
         if (mem_read) begin
             case (funct3)
@@ -41,7 +41,7 @@ module data_memory (
         end
     end
     
-    // Write logic (sequential)
+    // Write logic 
     always_ff @(posedge clk) begin
         if (mem_write) begin
             case (funct3)
@@ -58,7 +58,7 @@ module data_memory (
                     mem[address+2] <= write_data[23:16];
                     mem[address+3] <= write_data[31:24];
                 end
-                default: ; // No operation
+                default: ; 
             endcase
         end
     end
