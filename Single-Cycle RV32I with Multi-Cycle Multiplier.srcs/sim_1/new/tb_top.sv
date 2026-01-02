@@ -39,7 +39,7 @@ module tb_top();
         $fwrite(log_file, "Reset released at t=%0t\n\n", $time);
         
         // Run simulation
-        #5000;
+        #500000;
         
         // Final report
         $fwrite(log_file, "\n========================================\n");

@@ -1,0 +1,3 @@
+Time resolution is 1 ps
+Simulation complete. Check processor_debug.txt for details.
+$finish called at time : 500020 ns : File "C:/Users/Jawad/Desktop/Labs/CSA/Single-Cycle RV32I with Multi-Cycle Multiplier/Single-Cycle RV32I with Multi-Cycle Multiplier.srcs/sim_1/new/tb_top.sv" Line 74

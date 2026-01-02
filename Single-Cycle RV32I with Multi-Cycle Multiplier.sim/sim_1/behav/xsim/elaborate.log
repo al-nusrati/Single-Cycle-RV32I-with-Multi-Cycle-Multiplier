@@ -6,4 +6,25 @@ Using 16 slave threads.
 Starting static elaboration
 Pass Through NonSizing Optimizer
 Completed static elaboration
-INFO: [XSIM 43-4323] No Change in HDL. Linking previously generated obj files to create kernel
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4100] "C:/Users/Jawad/Desktop/Labs/CSA/Single-Cycle RV32I with Multi-Cycle Multiplier/Single-Cycle RV32I with Multi-Cycle Multiplier.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+WARNING: [XSIM 43-4100] "C:/Users/Jawad/Desktop/Labs/CSA/Single-Cycle RV32I with Multi-Cycle Multiplier/Single-Cycle RV32I with Multi-Cycle Multiplier.sim/sim_1/behav/xsim/glbl.v" Line 6. Module glbl has a timescale but at least one module in design doesn't have timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.program_counter
+Compiling module xil_defaultlib.instruction_memory
+Compiling module xil_defaultlib.register_file
+Compiling module xil_defaultlib.imm_gen
+Compiling module xil_defaultlib.mux_2to1
+Compiling module xil_defaultlib.alu
+Compiling module xil_defaultlib.multiplier_coprocessor
+Compiling module xil_defaultlib.multiplier_control
+Compiling module xil_defaultlib.data_memory
+Compiling module xil_defaultlib.write_back_mux
+Compiling module xil_defaultlib.control_unit
+Compiling module xil_defaultlib.alu_control
+Compiling module xil_defaultlib.control
+Compiling module xil_defaultlib.top
+Compiling module xil_defaultlib.tb_top
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_top_behav

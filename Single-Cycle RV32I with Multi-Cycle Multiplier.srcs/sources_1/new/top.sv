@@ -94,7 +94,7 @@ module top #(
         .b(alu_operand2),
         .alu_control(alu_control),
         .mult_result(mult_result),
-        .mult_done(mult_done),
+        .mult_done(mult_done || mult_write_pending),
         .result(alu_result),
         .zero(zero)
     );
